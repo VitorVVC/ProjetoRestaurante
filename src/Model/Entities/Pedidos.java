@@ -5,7 +5,10 @@ import Model.Enums.TiposDePrato;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -55,9 +58,28 @@ public class Pedidos {
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Não identificamos sua escrita: " + e.getMessage());
+            return;
         }
-
+        String respond;
+        System.out.println("Está satisfeito ou deseja revisitar algum de nossos menus? ");
+        System.out.print("'Sim desejo' OU 'Não, estou satisfeito' (Sim ou não ):  ");
+        do {
+            respond = sc.nextLine();
+            if (respond.equalsIgnoreCase("sim")) {
+                cardapioGeral();
+                return;
+            }
+            int hora = LocalDateTime.now().getHour();
+            if (respond.equalsIgnoreCase("não") && hora >= 6 && hora <= 12) {
+                System.out.println("Tudo bem, tenha um bom dia!");
+            } else if (respond.equalsIgnoreCase("não") && hora >= 12 && hora < 18) {
+                System.out.println("Tudo bem, tenha uma boa tarde!");
+            } else if (respond.equalsIgnoreCase("não") && hora >= 18 || hora < 6) {
+                System.out.println("Tudo bem, tenha uma boa noite!");
+            }
+        } while (!respond.equalsIgnoreCase("sim") && !respond.equalsIgnoreCase("não"));
     }
+
 
     // Método cardapioSobremesa() para exibir no método cardapioGeral() o usuario poder visualiza-lo
     private void cardapioSobremesa() {
@@ -73,7 +95,7 @@ public class Pedidos {
                     TiposDePrato prato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
 
                     Double preco = Double.parseDouble(precoString);
-                    pratosPrincipais.add(new Pedidos(nome, preco, descricao, prato));
+                    pratosSobremesa.add(new Pedidos(nome, preco, descricao, prato));
                 } catch (DomainException e) {
                     System.out.println("Tipo de prato inválido" + e.getMessage());
                 } catch (RuntimeException e) {
@@ -85,29 +107,40 @@ public class Pedidos {
             System.out.println("Arquivo não encontrado: " + e.getMessage());
         }
         System.out.println("Cardapio De Sobremesas: ");
-        for (int i = 0; i < pratosPrincipais.size(); i++) {
+        for (int i = 0; i < pratosSobremesa.size(); i++) {
             System.out.println("Prato numero [" + (i + 1) + "]");
-            System.out.println(pratosPrincipais.get(i));
+            System.out.println(pratosSobremesa.get(i));
         }
         System.out.println("================================");
-        System.out.print("Você deseja ordenar o cardápio do maior para o menor preço ou se encontra satisfeito com o cardápio atual? (Sim ou não)");
+        System.out.print("Você deseja ordenar o cardápio do maior para o menor preço ou menor para maior? Caso não deseje responda não, caso queira então sim: ");
         String respond = sc.next();
-        if (respond.equalsIgnoreCase("sim")) {
-
-            System.out.println("Cardapio De Sobremesas ( Maior para menor preço ): ");
-            Double precoMin = Double.MAX_VALUE;
-            for (int i = 0; i < pratosPrincipais.size(); i++) {
-                Pedidos p = pratosPrincipais.get(i);
-                if (p.getPreco() < precoMin) {
-                    precoMin = p.getPreco();
-                    System.out.println("Prato numero [" + (i + 1) + "]");
-                    System.out.println(p);
+        int r = 0;
+        do {
+            if (respond.equalsIgnoreCase("sim")) {
+                System.out.print("Qual ordem deseja usar? Maior para menor (1) ou menor para maior (2): ");
+                r = sc.nextInt();
+                sc.nextLine();
+                if (r == 1) {
+                    ordenarMaiorParaMenor(pratosSobremesa);
+                    System.out.println("Cardapio De Sobremesas ( Maior para menor preço ): ");
+                    for (int i = 0; i < pratosSobremesa.size(); i++) {
+                        System.out.println("Prato numero [" + (i + 1) + "]");
+                        System.out.println(pratosSobremesa.get(i));
+                    }
+                } else if (r == 2) {
+                    ordenarMenorParaMaior(pratosSobremesa);
+                    System.out.println("Cardapio De Sobremesas ( Menor para maior preço ): ");
+                    for (int i = 0; i < pratosSobremesa.size(); i++) {
+                        System.out.println("Prato numero [" + (i + 1) + "]");
+                        System.out.println(pratosSobremesa.get(i));
+                    }
+                } else {
+                    System.out.print("Tente novamente ");
                 }
+            } else {
+                System.out.println("Tudo bem.Tenha uma bom dia.");
             }
-
-        } else {
-            System.out.println("Tudo bem.Tenha uma bom dia.");
-        }
+        } while (r != 1 && r != 2);
     }
 
     // Método cardapioPrincipal() para exibir no método cardapioGeral() o usuario poder visualiza-lo
@@ -140,6 +173,36 @@ public class Pedidos {
             System.out.println("Prato numero [" + (i + 1) + "]");
             System.out.println(pratosPrincipais.get(i));
         }
+        System.out.println("================================");
+        System.out.print("Você deseja ordenar o cardápio do maior para o menor preço ou menor para maior? Caso não deseje responda não, caso queira então sim: ");
+        String respond = sc.next();
+        int r = 0;
+        do {
+            if (respond.equalsIgnoreCase("sim")) {
+                System.out.print("Qual ordem deseja usar? Maior para menor (1) ou menor para maior (2): ");
+                r = sc.nextInt();
+                sc.nextLine();
+                if (r == 1) {
+                    ordenarMaiorParaMenor(pratosPrincipais);
+                    System.out.println("Cardapio De Pratos Principais ( Maior para menor preço ): ");
+                    for (int i = 0; i < pratosPrincipais.size(); i++) {
+                        System.out.println("Prato numero [" + (i + 1) + "]");
+                        System.out.println(pratosPrincipais.get(i));
+                    }
+                } else if (r == 2) {
+                    ordenarMenorParaMaior(pratosPrincipais);
+                    System.out.println("Cardapio De Pratos Principais ( Menor para maior preço ): ");
+                    for (int i = 0; i < pratosPrincipais.size(); i++) {
+                        System.out.println("Prato numero [" + (i + 1) + "]");
+                        System.out.println(pratosPrincipais.get(i));
+                    }
+                } else {
+                    System.out.print("Tente novamente ");
+                }
+            } else {
+                System.out.println("Tudo bem.Tenha uma bom dia.");
+            }
+        } while (r != 1 && r != 2);
     }
 
     // Método cardapioEntrada() para exibir no método CardapioGeral() o usuário poder visualiza-lo
@@ -156,7 +219,7 @@ public class Pedidos {
                     TiposDePrato prato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
 
                     Double preco = Double.parseDouble(precoString);
-                    pratosPrincipais.add(new Pedidos(nome, preco, descricao, prato));
+                    pratosEntrada.add(new Pedidos(nome, preco, descricao, prato));
                 } catch (DomainException e) {
                     System.out.println("Tipo de prato inválido" + e.getMessage());
                 } catch (RuntimeException e) {
@@ -168,11 +231,52 @@ public class Pedidos {
             System.out.println("Arquivo não encontrado: " + e.getMessage());
         }
         System.out.println("Cardapio De Entradas: ");
-        for (int i = 0; i < pratosPrincipais.size(); i++) {
+        for (int i = 0; i < pratosEntrada.size(); i++) {
             System.out.println("Prato numero [" + (i + 1) + "]");
-            System.out.println(pratosPrincipais.get(i));
+            System.out.println(pratosEntrada.get(i));
         }
+        System.out.println("================================");
+        System.out.print("Você deseja ordenar o cardápio do maior para o menor preço ou menor para maior? Caso não deseje responda não, caso queira então sim: ");
+        String respond = sc.next();
+        int r = 0;
+        do {
+            if (respond.equalsIgnoreCase("sim")) {
+                System.out.print("Qual ordem deseja usar? Maior para menor (1) ou menor para maior (2): ");
+                r = sc.nextInt();
+                sc.nextLine();
+                if (r == 1) {
+                    ordenarMaiorParaMenor(pratosEntrada);
+                    System.out.println("Cardapio De Pratos Principais ( Maior para menor preço ): ");
+                    for (int i = 0; i < pratosEntrada.size(); i++) {
+                        System.out.println("Prato numero [" + (i + 1) + "]");
+                        System.out.println(pratosEntrada.get(i));
+                    }
+                } else if (r == 2) {
+                    ordenarMenorParaMaior(pratosEntrada);
+                    System.out.println("Cardapio De Pratos Principais ( Menor para maior preço ): ");
+                    for (int i = 0; i < pratosEntrada.size(); i++) {
+                        System.out.println("Prato numero [" + (i + 1) + "]");
+                        System.out.println(pratosEntrada.get(i));
+                    }
+                } else {
+                    System.out.print("Tente novamente ");
+                }
+            } else {
+                System.out.println("Tudo bem.Tenha uma bom dia.");
+            }
+        } while (r != 1 && r != 2);
     }
+
+    // Método para ordenarMaiorParaMenor()
+    public void ordenarMaiorParaMenor(List<Pedidos> cardapioX) {
+        Collections.sort(cardapioX, (p1, p2) -> Double.compare(p2.getPreco(), p1.getPreco()));
+    }
+
+    // Método para ordenarMenorParaMaior()
+    public void ordenarMenorParaMaior(List<Pedidos> cardapioX) {
+        Collections.sort(cardapioX, (p1, p2) -> Double.compare(p1.getPreco(), p2.getPreco()));
+    }
+
 
     // Sobrescrita do método toString()
     @Override
