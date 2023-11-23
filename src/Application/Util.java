@@ -14,6 +14,7 @@ public class Util {
     public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static Scanner sc = new Scanner(System.in);
 
+    // Considerar trocar o nome e email por apenas ID e Senha e se caso o usuario não lembre de seu ID criar o método recuperarID
     public static void loginMethod() {
         System.out.println("Olá, seja bem vindo ao *Restaurante ficticio*!!");
         System.out.println("Você já possui cadastro no nosso restaurante?");
