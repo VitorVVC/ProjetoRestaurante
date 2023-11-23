@@ -2,18 +2,30 @@ package Model.Entities;
 
 import Model.Exceptions.DomainException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Random;
 
 import static Application.Util.*;
-public class Funcionario extends Pessoa{
+
+public class Funcionario extends Pessoa implements InterfaceFuncionario {
+    List<Funcionario> funcionarios = new ArrayList<>();
 
     public Funcionario(String nome, String email, String senha, Integer id, String telefone, LocalDate nascimento) {
         super(nome, email, senha, id, telefone, nascimento);
     }
+
+    public Funcionario() {
+    }
+
     @Override
-    public Funcionario metodoLoginFuncionario() {
+    public Funcionario metodoCriarContaFuncionario() {
         String nome;
         String loginEmail;
         String loginSenha;
@@ -38,13 +50,33 @@ public class Funcionario extends Pessoa{
             System.out.print("As senhas não estão iguais, reescreva novamente: ");
             loginSenhaConfirm = sc.nextLine();
         }
-        System.out.println("Agora forneca-me a sua data de nascença (dd/MM/yyyy): ");
+        System.out.print("Agora forneca-me a sua data de nascença (dd/MM/yyyy): ");
         LocalDate nascimento = LocalDate.parse(sc.nextLine(), dateTimeFormatter);
 
         Random geraID = new Random();
         int newId = 1000000 + geraID.nextInt(9000000);
+        System.out.println("Seu ID é: " + newId);
 
+        // Escrever no arquivo antes do return
+        try {
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/IdLogins.txt");
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(nome + " " + loginEmail + " " + loginSenha + " " + newId);
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Erro na escrita do progama.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro inesperado: " + e.getMessage());
+        }
+        // Retornar o novo funcionário
         return new Funcionario(nome, loginEmail, loginSenha, newId, telefone, nascimento);
     }
 
+
+    @Override
+    public void metodoLoginFuncionario() {
+        System.out.println("Forneça seu ID, email e senha nas casas abaixo: ");
+        System.out.println("ID: ");
+        String id = sc.nextLine();
+    }
 }

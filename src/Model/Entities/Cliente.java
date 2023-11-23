@@ -1,7 +1,7 @@
 package Model.Entities;
 
 import Model.Exceptions.DomainException;
-import Model.TiposDePrato.TiposDePrato;
+import Model.Enums.TiposDePrato;
 
 import java.time.LocalDate;
 import java.util.InputMismatchException;
@@ -15,8 +15,11 @@ public class Cliente extends Pessoa implements InterfaceCliente {
         super(nome, email, senha, id, telefone, nascimento);
     }
 
+    public Cliente() {
+    }
+
     @Override
-    public Cliente metodoLoginCliente() {
+    public Cliente metodoCriarContaCliente() {
         String nome;
         String loginEmail;
         String loginSenha;
@@ -48,6 +51,11 @@ public class Cliente extends Pessoa implements InterfaceCliente {
         int newId = 1000000 + geraID.nextInt(9000000);
 
         return new Cliente(nome, loginEmail, loginSenha, newId, telefone, nascimento);
+    }
+
+    @Override
+    public void metodoLoginCliente() {
+
     }
 
     @Override

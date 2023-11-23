@@ -1,20 +1,39 @@
 package Model.Entities;
 
-import Model.TiposDePrato.TiposDePrato;
+import Model.Exceptions.DomainException;
+import Model.Enums.TiposDePrato;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import static Application.Util.*;
-import static Model.TiposDePrato.TiposDePrato.*;
+import static Model.Enums.TiposDePrato.*;
 
 public class Pedidos {
+    // Lista de pedidos / lista de pratos
+
+    List<Pedidos> pedidos = new ArrayList<>();
+    List<Pedidos> pratosEntrada = new ArrayList<>();
+    List<Pedidos> pratosPrincipais = new ArrayList<>();
+    List<Pedidos> pratosSobremesa = new ArrayList<>();
+
+
+    // Métodos que todo prato pedido terá
     private String nome;
     private Double preco;
     private String descricao;
     private TiposDePrato tiposDePrato;
 
+    public Pedidos() {
+    }
+
     public Pedidos(String nome, Double preco, String descricao, TiposDePrato tiposDePrato) {
+        if (tiposDePrato != ENTRADA && tiposDePrato != PRINCIPAL && tiposDePrato != SOBREMESA) {
+            throw new DomainException("Erro na leitura do tipo do prato.");
+        }
         this.nome = nome;
         this.preco = preco;
         this.descricao = descricao;
@@ -22,54 +41,143 @@ public class Pedidos {
     }
 
     public void cardapioGeral() {
-        System.out.println("Qual cardápio você deseja acessar?");
-        System.out.print("Entrada, Principal ou Sobremesas? ");
-        TiposDePrato escolha = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
-        if (escolha.equals(ENTRADA)) {
-            cardapioEntrada();
-        }
-        if (escolha.equals(TiposDePrato.PRINCIPAL)) {
-            cardapioPrincipal();
-        }
-        if (escolha.equals(TiposDePrato.SOBREMESA)) {
-            cardapioSobremesa();
-        } else {
-            while (!escolha.equals("ENTRADA") && !escolha.equals("PRINCIPAL") && !escolha.equals("SOBREMESA")) {
-                System.out.print("Não identificamos sua resposta, por favor repita: ");
-                escolha = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
+        System.out.print("Qual cardápio você deseja acessar. Entrada, Principal ou Sobremesa? ");
+        try {
+            TiposDePrato escolha = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
+            if (escolha.equals(TiposDePrato.ENTRADA)) {
+                cardapioEntrada();
             }
+            if (escolha.equals(TiposDePrato.PRINCIPAL)) {
+                cardapioPrincipal();
+            }
+            if (escolha.equals(TiposDePrato.SOBREMESA)) {
+                cardapioSobremesa();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Não identificamos sua escrita: " + e.getMessage());
+        }
+
+    }
+
+    // Método cardapioSobremesa() para exibir no método cardapioGeral() o usuario poder visualiza-lo
+    private void cardapioSobremesa() {
+        try {
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Sobremesas.txt");
+            // File file = new File("TxTFiles/Principal.txt");
+            Scanner sc = new Scanner(file);
+            while (sc.hasNext()) {
+                try {
+                    String nome = sc.nextLine();
+                    String precoString = sc.nextLine();
+                    String descricao = sc.nextLine();
+                    TiposDePrato prato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
+
+                    Double preco = Double.parseDouble(precoString);
+                    pratosPrincipais.add(new Pedidos(nome, preco, descricao, prato));
+                } catch (DomainException e) {
+                    System.out.println("Tipo de prato inválido" + e.getMessage());
+                } catch (RuntimeException e) {
+                    System.out.println("Erro inesperado.");
+                }
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Arquivo não encontrado: " + e.getMessage());
+        }
+        System.out.println("Cardapio De Sobremesas: ");
+        for (int i = 0; i < pratosPrincipais.size(); i++) {
+            System.out.println("Prato numero [" + (i + 1) + "]");
+            System.out.println(pratosPrincipais.get(i));
+        }
+        System.out.println("================================");
+        System.out.print("Você deseja ordenar o cardápio do maior para o menor preço ou se encontra satisfeito com o cardápio atual? (Sim ou não)");
+        String respond = sc.next();
+        if (respond.equalsIgnoreCase("sim")) {
+
+            System.out.println("Cardapio De Sobremesas ( Maior para menor preço ): ");
+            Double precoMin = Double.MAX_VALUE;
+            for (int i = 0; i < pratosPrincipais.size(); i++) {
+                Pedidos p = pratosPrincipais.get(i);
+                if (p.getPreco() < precoMin) {
+                    precoMin = p.getPreco();
+                    System.out.println("Prato numero [" + (i + 1) + "]");
+                    System.out.println(p);
+                }
+            }
+
+        } else {
+            System.out.println("Tudo bem.Tenha uma bom dia.");
         }
     }
 
     // Método cardapioPrincipal() para exibir no método cardapioGeral() o usuario poder visualiza-lo
-    private List<Pedidos> cardapioPrincipal() {
-        List<Pedidos> cardapioPrincipal = new ArrayList<>();
-        cardapioPrincipal.add(new Pedidos("Filé Alfredo",249.00,"400g de medalhões de Filé Mignon envolvidos com bacon com molho funghi acompanhado de fettuccine com molho Alfredo preparado com creme de leite fresco.",PRINCIPAL));
-        cardapioPrincipal.add(new Pedidos("Meio Filé Paulista (2 pessoas)",113.00,"250g de filé mignon cobertos com alhos fritos. Acompanha batatas recheadas e delicioso arroz \"biro-biro\" com batata palha, ovos, bacon, cebola picada, salsinha, cheiro verde e farofa.",PRINCIPAL));
-        cardapioPrincipal.add(new Pedidos("Paella Caldosa Coco Bambu (2 pessoas)",201.00,"Arroz caldoso com camarão, lula, polvo, peixe e mexilhão, refogado com pimentões, ervilha, especiarias e um leve toque de açafrão. Servidos na paellera. Rico em sabor e apresentação.",PRINCIPAL));
-        cardapioPrincipal.add(new Pedidos("Camarão Capri (2 pessoas)",118.00,"Camarões grelhados envolvidos em fettuccine, berinjela, abobrinha, tomate seco, creme de leite fresco e molho pesto de manjericão.",PRINCIPAL));
-        cardapioPrincipal.add(new Pedidos("Camarão Ibiza (2 pessoas)",127.00,"Camarões empanados com gergelim, acompanhados de arroz com leite de coco, molho de tomates frescos, nata, mix de pimentões, cebola, coentro e cebolinha.",PRINCIPAL));
+    private void cardapioPrincipal() {
+        try {
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Principal.txt");
+            //File file = new File("TxTFiles/Principal.txt");
+            Scanner sc = new Scanner(file);
+            while (sc.hasNext()) {
+                try {
+                    String nome = sc.nextLine();
+                    String precoString = sc.nextLine();
+                    String descricao = sc.nextLine();
+                    TiposDePrato prato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
 
-        return cardapioPrincipal;
+                    Double preco = Double.parseDouble(precoString);
+                    pratosPrincipais.add(new Pedidos(nome, preco, descricao, prato));
+                } catch (DomainException e) {
+                    System.out.println("Tipo de prato inválido" + e.getMessage());
+                } catch (RuntimeException e) {
+                    System.out.println("Erro inesperado.");
+                }
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Arquivo não encontrado: " + e.getMessage());
+        }
+        System.out.println("Cardapio Principal: ");
+        for (int i = 0; i < pratosPrincipais.size(); i++) {
+            System.out.println("Prato numero [" + (i + 1) + "]");
+            System.out.println(pratosPrincipais.get(i));
+        }
     }
 
     // Método cardapioEntrada() para exibir no método CardapioGeral() o usuário poder visualiza-lo
-    private List<Pedidos> cardapioEntrada() {
-        List<Pedidos> cardapioEntrada = new ArrayList<>();
-        cardapioEntrada.add(new Pedidos("Batata Frita Especial", 30.00, "Batatas fritas cobertas de queijo muçarela derretido e bacon crocante", ENTRADA));
-        cardapioEntrada.add(new Pedidos("Camarão à Milanesa", 69.00, "Camarão à milanesa com gergelim. Acompanha molho tártaro.", ENTRADA));
-        cardapioEntrada.add(new Pedidos("Camarão Recife", 50.00, "Camarões inteiros (com casca e cabeça) marinados na cerveja, levemente empanados,fritos e refogados com cebola e alho.", ENTRADA));
-        cardapioEntrada.add(new Pedidos("Couvert Especial", 60.00, "Camarões marinados, tomate seco com queijo minas frescal temperado, tomatesgrelhados com alho frito, caponata de berinjela e ceviche de salmão. Acompanha torradastemperadas e pães de queijo.", ENTRADA));
-        cardapioEntrada.add(new Pedidos("Croquete de Bacalhau (4 unidades)", 35.00, "Servido com molho tártaro.", ENTRADA));
-        cardapioEntrada.add(new Pedidos("Filé com Fritas", 73.00, "300g de cubos de filé, refogado com cebola roxa e molho barbecue. Acompanha batata frita.", ENTRADA));
+    private void cardapioEntrada() {
+        try {
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Entrada.txt");
+            //File file = new File("TxTFiles/Principal.txt");
+            Scanner sc = new Scanner(file);
+            while (sc.hasNext()) {
+                try {
+                    String nome = sc.nextLine();
+                    String precoString = sc.nextLine();
+                    String descricao = sc.nextLine();
+                    TiposDePrato prato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
 
-        return cardapioEntrada;
+                    Double preco = Double.parseDouble(precoString);
+                    pratosPrincipais.add(new Pedidos(nome, preco, descricao, prato));
+                } catch (DomainException e) {
+                    System.out.println("Tipo de prato inválido" + e.getMessage());
+                } catch (RuntimeException e) {
+                    System.out.println("Erro inesperado.");
+                }
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Arquivo não encontrado: " + e.getMessage());
+        }
+        System.out.println("Cardapio De Entradas: ");
+        for (int i = 0; i < pratosPrincipais.size(); i++) {
+            System.out.println("Prato numero [" + (i + 1) + "]");
+            System.out.println(pratosPrincipais.get(i));
+        }
     }
 
     // Sobrescrita do método toString()
     @Override
     public String toString() {
-        return String.format("Tipo do pedido:%s%nNome do prato: %s%nDescrição:%s%nValor: %.2f", tiposDePrato, nome, descricao, preco);
+        return String.format("Tipo do pedido: %s%nNome do prato: %s%nDescrição: %s%nValor: %.2f", tiposDePrato, nome, descricao, preco);
     }
 
     // Getters e setters
