@@ -1,4 +1,4 @@
-package Model.TiposDePrato;
+package Model.Enums;
 
 public enum TiposDePrato {
 
