@@ -3,6 +3,9 @@ package Model.Entities;
 import Model.Exceptions.DomainException;
 import Model.Enums.TiposDePrato;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -44,11 +47,24 @@ public class Cliente extends Pessoa implements InterfaceCliente {
             System.out.print("As senhas não estão iguais, reescreva novamente: ");
             loginSenhaConfirm = sc.nextLine();
         }
-        System.out.println("Agora forneca-me a sua data de nascença (dd/MM/yyyy): ");
+        System.out.println("Agora forneca-me a sua data de nascimento (dd/MM/yyyy): ");
         LocalDate nascimento = LocalDate.parse(sc.nextLine(), dateTimeFormatter);
 
         Random geraID = new Random();
         int newId = 1000000 + geraID.nextInt(9000000);
+        System.out.println("Seu ID é: " + newId);
+
+        // Escrever no arquivo antes do return
+        try {
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+            FileWriter fileWriter = new FileWriter(file, true);
+            fileWriter.write(nome + " " + loginEmail + " " + loginSenha + " " + newId);
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Erro na escrita do progama.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro inesperado: " + e.getMessage());
+        }
 
         return new Cliente(nome, loginEmail, loginSenha, newId, telefone, nascimento);
     }
@@ -62,11 +78,19 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     public void Pedido(Pedidos pedido) {
         System.out.println("Por favor leia nosso cardápio através do método cardapio e portanto decida qual será seu pedido.");
         System.out.print("Já leu nosso cardapio? (Sim ou não): ");
-        String simOuNao = sc.nextLine();
-        if (simOuNao.equalsIgnoreCase("sim")) {
-            System.out.println("Pois bem, qual tipo de prato você deseja consumir? (Principal? Sobremesa ou Entrada?) ");
-            TiposDePrato escolhaPrato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
+        String simOuNao;
+        do {
+            simOuNao = sc.nextLine();
+            if (simOuNao.equalsIgnoreCase("sim")) {
+                System.out.println("Pois bem, qual tipo de prato você deseja consumir? (Principal? Sobremesa ou Entrada?) ");
+                TiposDePrato escolhaPrato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
 
-        }
+            } else if (simOuNao.equalsIgnoreCase("não")) {
+                Pedidos p = new Pedidos();
+                p.cardapioGeral();
+            } else {
+                System.out.print("Não entendi sua resposta, por favor reescreva: ");
+            }
+        } while (simOuNao.equalsIgnoreCase("sim") && simOuNao.equalsIgnoreCase("não"));
     }
 }
