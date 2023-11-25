@@ -50,7 +50,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
             System.out.print("As senhas não estão iguais, reescreva novamente: ");
             loginSenhaConfirm = sc.nextLine();
         }
-        System.out.print("Agora forneca-me a sua data de nascença (dd/MM/yyyy): ");
+        System.out.print("Agora forneca-me a sua data de nascimento (dd/MM/yyyy): ");
         LocalDate nascimento = LocalDate.parse(sc.nextLine(), dateTimeFormatter);
 
         Random geraID = new Random();
@@ -59,8 +59,8 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
         // Escrever no arquivo antes do return
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/IdLogins.txt");
-            FileWriter fileWriter = new FileWriter(file);
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+            FileWriter fileWriter = new FileWriter(file,true);
             fileWriter.write(nome + " " + loginEmail + " " + loginSenha + " " + newId);
             fileWriter.close();
         } catch (IOException e) {
