@@ -2,6 +2,7 @@ package Model.Entities;
 
 import Model.Exceptions.DomainException;
 import Model.Enums.TiposDePrato;
+import com.sun.source.doctree.EntityTree;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -75,22 +76,51 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     }
 
     @Override
-    public void Pedido(Pedidos pedido) {
+    public Pedidos pedido() {
+
+        Pedidos temp = new Pedidos();
         System.out.println("Por favor leia nosso cardápio através do método cardapio e portanto decida qual será seu pedido.");
         System.out.print("Já leu nosso cardapio? (Sim ou não): ");
         String simOuNao;
         do {
             simOuNao = sc.nextLine();
             if (simOuNao.equalsIgnoreCase("sim")) {
-                System.out.println("Pois bem, qual tipo de prato você deseja consumir? (Principal? Sobremesa ou Entrada?) ");
+                System.out.print("Pois bem, qual tipo de prato você deseja consumir? (Principal? Sobremesa ou Entrada?) ");
                 TiposDePrato escolhaPrato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
-
+                realizarPedido(escolhaPrato);
             } else if (simOuNao.equalsIgnoreCase("não")) {
                 Pedidos p = new Pedidos();
                 p.cardapioGeral();
+                System.out.println("Agora que já viu o cardápio, nos diga..");
+                System.out.print("Pois bem, qual tipo de prato você deseja consumir? (Principal? Sobremesa ou Entrada?) ");
+                TiposDePrato escolhaPrato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
+                realizarPedido(escolhaPrato);
             } else {
                 System.out.print("Não entendi sua resposta, por favor reescreva: ");
             }
         } while (simOuNao.equalsIgnoreCase("sim") && simOuNao.equalsIgnoreCase("não"));
+        return temp;
+    }
+
+
+    private void realizarPedido(TiposDePrato tiposDePrato) {
+        if (tiposDePrato.equals(TiposDePrato.PRINCIPAL)) {
+            System.out.println("Do cardapio principal, qual nome do seu pedido?");
+            System.out.print("NOME: ");
+            String nome = sc.nextLine();
+            // Adicionar método para ler o nome comparar pelo TXT inteiro e quando encontrar retornar tal pedido
+        }
+        if (tiposDePrato.equals(TiposDePrato.SOBREMESA)) {
+            System.out.println("Do cardapio sobremesa, qual nome do seu pedido?");
+            System.out.print("NOME: ");
+            String nome = sc.nextLine();
+            // Adicionar método para ler o nome comparar pelo TXT inteiro e quando encontrar retornar tal pedido
+        }
+        if (tiposDePrato.equals(TiposDePrato.ENTRADA)) {
+            System.out.println("Do cardapio entrada, qual nome do seu pedido?");
+            System.out.print("NOME: ");
+            String nome = sc.nextLine();
+            // Adicionar método para ler o nome comparar pelo TXT inteiro e quando encontrar retornar tal pedido
+        }
     }
 }
