@@ -75,8 +75,11 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
     @Override
     public void metodoLoginFuncionario() {
-        System.out.println("Forneça seu ID, email e senha nas casas abaixo: ");
+        System.out.println("Forneça seu ID e senha nas casas abaixo: ");
         System.out.println("ID: ");
         String id = sc.nextLine();
+        System.out.println("Senha: ");
+        String senha = sc.nextLine();
+
     }
 }
