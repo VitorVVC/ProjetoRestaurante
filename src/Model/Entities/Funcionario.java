@@ -61,7 +61,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
         try {
             File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
             FileWriter fileWriter = new FileWriter(file,true);
-            fileWriter.write(nome + " " + loginEmail + " " + loginSenha + " " + newId);
+            fileWriter.write(nome + " " + loginEmail + " " + loginSenha + " " + newId + "\n");
             fileWriter.close();
         } catch (IOException e) {
             System.out.println("Erro na escrita do progama.");
