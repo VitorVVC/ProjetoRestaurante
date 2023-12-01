@@ -1,8 +1,8 @@
 package Model.Entities;
 
 public interface InterfaceCliente {
-    Cliente metodoCriarContaCliente();
-    void metodoLoginCliente();
+    Cliente metodoCriarContaCliente(); // Método obrigatorio para classe clientes criarem sua conta
+    void metodoLoginCliente(); // Método obrigatorio para poder clientes logarem
 
-    void Pedido(Pedidos pedidos);
+    Pedidos pedido(); // Método de pedidos que qualquer cliente pode fazer que retorna um pedido
 }
