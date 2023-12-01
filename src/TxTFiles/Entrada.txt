@@ -2,7 +2,7 @@ Batata Frita Especial
 30.00
 Batatas fritas cobertas de queijo muçarela derretido e bacon crocante
 ENTRADA
-Camarão à Milanesa
+Camarão Milanesa
 69.00
 Camarão à milanesa com gergelim. Acompanha molho tártaro.
 ENTRADA
@@ -22,3 +22,4 @@ Filé com Fritas
 73.00
 300g de cubos de filé, refogado com cebola roxa e molho barbecue. Acompanha batata frita.
 ENTRADA
+
