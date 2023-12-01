@@ -10,15 +10,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Util {
     public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static Scanner sc = new Scanner(System.in);
+    public static final Pattern TELEFONE_PATTERN = Pattern.compile("\\(\\d{2}\\)\\s\\d{4,5}-\\d{4}");
 
 
-    // Considerar adicionar um while para quando o usuario lembra sim sua senha e ID porém so digitou errado
-    // Considerar adicionar uma pessoa Gerente para "gerenciar" o negócio
+    // TODO: 30/11/23 --> Considerar adicionar uma pessoa Gerente para "gerenciar" o negócio
+    // TODO: 30/11/23 --> Adicionar no método de login caso o usuario não tenha esquecido a senha ou ID e sim digitado errado
+
+    public static void principal() {
+        loginMethod();
+    }
+
+    // Método para logar o usuário no sistema do restaurante
+    // Caso não possua login ele será redirecionado para o método criar conta
     public static void loginMethod() {
+        //TODO
         System.out.println("Olá, seja bem vindo ao *La praiana*!!");
         System.out.println("Você já possui cadastro no nosso restaurante?");
         String respond;
@@ -62,7 +72,7 @@ public class Util {
                                     System.out.print("Não foi possivel identificar sua resposta, digite novamente: ");
                                 }
                             } while (!resp.equals('1') && !resp.equals('2'));
-                        } else {
+                        } else if (temp.equalsIgnoreCase("não")) { // TODO: 30/11/23 --> Continuar  
                             System.out.println("Tudo bem, tente novamente.");
                         }
                     }
@@ -76,9 +86,9 @@ public class Util {
                 throw new DomainException("Não foi possivel identificar sua escrita por favor recarregue o progama.");
             }
         } while (!respond.equalsIgnoreCase("sim") && !respond.equalsIgnoreCase("não"));
-
     }
 
+    // Método para adicionar um novo usuário ao sistema
     public static void adicionarAoSistema() {
         System.out.print("Você é um funcionário ou cliente? ");
         String resposta;
@@ -100,7 +110,7 @@ public class Util {
         } while (!resposta.equalsIgnoreCase("funcionário") && !resposta.equalsIgnoreCase("cliente"));
     }
 
-    // Método para LOGAR na conta
+    // Método para conferir as credenciais para assim realizar o login
     public static boolean verificarCredenciais(String senha, String ID) {
         try {
             File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
@@ -147,7 +157,7 @@ public class Util {
                     String nomeArquivo = partes[0];
                     String emailArquivo = partes[1];
 
-                    if (nomeArquivo.equalsIgnoreCase(nome) && emailArquivo.equalsIgnoreCase(emailArquivo)) {
+                    if (nomeArquivo.equalsIgnoreCase(nome) && emailArquivo.equalsIgnoreCase(email)) {
                         // Usuário encontrado no arquivo
                         return true;
                     }
