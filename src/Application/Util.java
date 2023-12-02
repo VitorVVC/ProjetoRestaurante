@@ -20,6 +20,8 @@ public class Util {
 
     // TODO: 30/11/23 --> Considerar adicionar uma pessoa Gerente para "gerenciar" o negócio
     // TODO: 30/11/23 --> Adicionar no método de login caso o usuario não tenha esquecido a senha ou ID e sim digitado errado
+    // TODO: 30/11/23 --> Todos os tratamentos de excecoes vierem seguidos de um runtime erro que pegue um erro desconhecido. Com -> throw new DomainException("Erro inesperado! --> " + e.getMessage());
+    // TODO: 01/12/23 --> Procurar forma de trocar a "forma" de texto quando o usuario receber uma mensagem do sistema
 
     public static void principal() {
         loginMethod();
@@ -28,54 +30,14 @@ public class Util {
     // Método para logar o usuário no sistema do restaurante
     // Caso não possua login ele será redirecionado para o método criar conta
     public static void loginMethod() {
-        //TODO
         System.out.println("Olá, seja bem vindo ao *La praiana*!!");
-        System.out.println("Você já possui cadastro no nosso restaurante?");
+        System.out.print("Você já possui cadastro no nosso restaurante? ");
         String respond;
-        Character resp;
         do {
             try {
                 respond = sc.nextLine();
                 if (respond.equalsIgnoreCase("sim")) {
-                    System.out.println("Que incrivel! Seja bem vindo de volta.");
-                    System.out.println("Por favor diga-me qual seu ID e senha ");
-                    System.out.print("ID: ");
-                    String ID = sc.nextLine();
-                    System.out.print("Senha: ");
-                    String senha = sc.nextLine();
-                    if (verificarCredenciais(senha, ID)) {
-                        System.out.println("Processo realizado com sucesso! Seja bem vindo novamente ");
-                    } else {
-                        System.out.print("Esqueceu seu ID ou Senha? (Sim ou não) ");
-                        String temp = sc.nextLine();
-                        if (temp.equalsIgnoreCase("sim")) {
-                            System.out.print("Deseja resgatar seu ID ou Senha? ");
-                            String idOuSenha = sc.nextLine();
-                            if (idOuSenha.equalsIgnoreCase("id")) {
-                                recuperarID();
-                            }
-                            if (idOuSenha.equalsIgnoreCase("senha")) {
-                                System.out.print("Você deseja recuperar sua senha (1) ou reescreve-la? (2): ");
-                            }
-                            do {
-                                resp = sc.nextLine().charAt(0);
-                                if (resp.equals('1')) {
-                                    recuperarSenha();
-                                }
-                                if (resp.equals('2')) {
-                                    System.out.print("Forneca-me seu nome: ");
-                                    String nome = sc.nextLine();
-                                    System.out.print("Forneca-me seu email atrelado a nossa instituição: ");
-                                    String email = sc.nextLine();
-                                    reescreverSenha(nome, email, ID);
-                                } else {
-                                    System.out.print("Não foi possivel identificar sua resposta, digite novamente: ");
-                                }
-                            } while (!resp.equals('1') && !resp.equals('2'));
-                        } else if (temp.equalsIgnoreCase("não")) { // TODO: 30/11/23 --> Continuar  
-                            System.out.println("Tudo bem, tente novamente.");
-                        }
-                    }
+                    loginExistente();
                 } else if (respond.equalsIgnoreCase("não")) {
                     System.out.println("Tudo bem. Vamos realizar o seu cadastro.");
                     adicionarAoSistema();
@@ -84,9 +46,61 @@ public class Util {
                 }
             } catch (InputMismatchException e) {
                 throw new DomainException("Não foi possivel identificar sua escrita por favor recarregue o progama.");
+            } catch (RuntimeException e) {
+                throw new DomainException("Erro inesperado! --> " + e.getMessage());
             }
         } while (!respond.equalsIgnoreCase("sim") && !respond.equalsIgnoreCase("não"));
     }
+
+    // Método para auxiliar o loginMethod().
+    private static void loginExistente() {
+        Character resp;
+        String ID;
+        String senha;
+
+        System.out.println("Que incrivel! Seja bem vindo de volta.");
+        System.out.println("Por favor diga-me qual seu ID e senha ");
+        do {
+            System.out.print("ID: ");
+            ID = sc.nextLine();
+            System.out.print("Senha: ");
+            senha = sc.nextLine();
+            if (verificarCredenciais(senha, ID)) {
+                System.out.println("Processo realizado com sucesso! Seja bem vindo novamente ");
+            } else {
+                System.out.print("Esqueceu seu ID ou Senha? (Sim ou não) ");
+                String temp = sc.nextLine();
+                if (temp.equalsIgnoreCase("sim")) {
+                    System.out.print("Deseja resgatar seu ID ou Senha? ");
+                    String idOuSenha = sc.nextLine();
+                    if (idOuSenha.equalsIgnoreCase("id")) {
+                        recuperarID();
+                    }
+                    if (idOuSenha.equalsIgnoreCase("senha")) {
+                        System.out.print("Você deseja recuperar sua senha (1) ou reescreve-la? (2): ");
+                    }
+                    do {
+                        resp = sc.nextLine().charAt(0);
+                        if (resp.equals('1')) {
+                            recuperarSenha();
+                        }
+                        if (resp.equals('2')) {
+                            System.out.print("Forneca-me seu nome: ");
+                            String nome = sc.nextLine();
+                            System.out.print("Forneca-me seu email atrelado a nossa instituição: ");
+                            String email = sc.nextLine();
+                            reescreverSenha(nome, email, ID);
+                        } else {
+                            System.out.print("Não foi possivel identificar sua resposta, digite novamente: ");
+                        }
+                    } while (!resp.equals('1') && !resp.equals('2'));
+                } else if (temp.equalsIgnoreCase("não")) {
+                    System.out.println("Reescreva seus dados");
+                }
+            }
+        } while (!verificarCredenciais(ID, senha));
+    }
+
 
     // Método para adicionar um novo usuário ao sistema
     public static void adicionarAoSistema() {
@@ -109,6 +123,7 @@ public class Util {
             }
         } while (!resposta.equalsIgnoreCase("funcionário") && !resposta.equalsIgnoreCase("cliente"));
     }
+
 
     // Método para conferir as credenciais para assim realizar o login
     public static boolean verificarCredenciais(String senha, String ID) {
