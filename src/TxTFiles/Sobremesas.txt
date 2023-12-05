@@ -1,20 +1,5 @@
-Tiramisu
-25.00
-Clássica sobremesa italiana à base de café, biscoitos champanhe, mascarpone e cacau em pó.
-SOBREMESA
-Mousse de Chocolate
-20.00
-Deliciosa mousse de chocolate feita com chocolate meio amargo, ovos, açúcar e creme de leite.
-SOBREMESA
-Pudim de Leite Condensado
-18.00
-Tradicional pudim de leite condensado com uma calda de caramelo suave.
-SOBREMESA
-Sorvete de Morango
-15.00
-Sorvete cremoso de morango, feito com morangos frescos e leite condensado.
-SOBREMESA
-Cheesecake de Frutas Vermelhas
-30.00
-Cheesecake com uma deliciosa cobertura de frutas vermelhas, incluindo morangos, amoras e framboesas.
-SOBREMESA
+Tiramisu|25.00|Clássica sobremesa italiana à base de café, biscoitos champanhe, mascarpone e cacau em pó.|SOBREMESA
+Mousse de Chocolate|20.00|Deliciosa mousse de chocolate feita com chocolate meio amargo, ovos, açúcar e creme de leite.|SOBREMESA
+Pudim de Leite Condensado|18.00|Tradicional pudim de leite condensado com uma calda de caramelo suave.|SOBREMESA
+Sorvete de Morango|15.00|Sorvete cremoso de morango, feito com morangos frescos e leite condensado.|SOBREMESA
+Cheesecake de Frutas Vermelhas|30.00|Cheesecake com uma deliciosa cobertura de frutas vermelhas, incluindo morangos, amoras e framboesas.|SOBREMESA

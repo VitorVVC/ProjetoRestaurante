@@ -1,20 +1,5 @@
-Filé Alfredo
-249.00
-400g de medalhões de Filé Mignon envolvidos com bacon com molho funghi acompanhado de fettuccine com molho Alfredo preparado com creme de leite fresco
-PRINCIPAL
-Meio Filé Paulista (2 pessoas)
-113.00
-250g de filé mignon cobertos com alhos fritos. Acompanha batatas recheadas e delicioso arroz "biro-biro" com batata palha, ovos, bacon, cebola picada, salsinha, cheiro verde e farofa.
-PRINCIPAL
-Paella Caldosa Coco Bambu (2 pessoas)
-201.00
-Arroz caldoso com camarão, lula, polvo, peixe e mexilhão, refogado com pimentões, ervilha, especiarias e um leve toque de açafrão. Servidos na paellera. Rico em sabor e apresentação.
-PRINCIPAL
-Camarão Capri (2 pessoas)
-118.00
-Camarões grelhados envolvidos em fettuccine, berinjela, abobrinha, tomate seco, creme de leite fresco e molho pesto de manjericão.
-PRINCIPAL
-Camarão Ibiza (2 pessoas)
-127.00
-Camarões empanados com gergelim, acompanhados de arroz com leite de coco, molho de tomates frescos, nata, mix de pimentões, cebola, coentro e cebolinha.
-PRINCIPAL
+Filé Alfredo|249.00|400g de medalhões de Filé Mignon envolvidos com bacon com molho funghi acompanhado de fettuccine com molho Alfredo preparado com creme de leite fresco|PRINCIPAL
+Meio Filé Paulista|113.00|250g de filé mignon cobertos com alhos fritos. Acompanha batatas recheadas e delicioso arroz "biro-biro" com batata palha, ovos, bacon, cebola picada, salsinha, cheiro verde e farofa.|PRINCIPAL
+Paella Caldosa Coco Bambo|201.00|Arroz caldoso com camarão, lula, polvo, peixe e mexilhão, refogado com pimentões, ervilha, especiarias e um leve toque de açafrão. Servidos na paellera. Rico em sabor e apresentação.|PRINCIPAL
+Camarão Capri|118.00|Camarões grelhados envolvidos em fettuccine, berinjela, abobrinha, tomate seco, creme de leite fresco e molho pesto de manjericão.|PRINCIPAL
+Camarão Ibiza|127.00|Camarões empanados com gergelim, acompanhados de arroz com leite de coco, molho de tomates frescos, nata, mix de pimentões, cebola, coentro e cebolinha.|PRINCIPAL

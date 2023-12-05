@@ -1,25 +1,7 @@
-Batata Frita Especial
-30.00
-Batatas fritas cobertas de queijo muçarela derretido e bacon crocante
-ENTRADA
-Camarão Milanesa
-69.00
-Camarão à milanesa com gergelim. Acompanha molho tártaro.
-ENTRADA
-Camarão Recife
-50.00
-Camarões inteiros (com casca e cabeça) marinados na cerveja, levemente empanados,fritos e refogados com cebola e alho.
-ENTRADA
-Couvert Especial
-60.00
-Camarões marinados, tomate seco com queijo minas frescal temperado, tomates grelhados com alho frito, caponata de berinjela e ceviche de salmão. Acompanha torradastemperadas e pães de queijo.
-ENTRADA
-Croquete de Bacalhau (4 unidades)
-35.00
-Servido com molho tártaro.
-ENTRADA
-Filé com Fritas
-73.00
-300g de cubos de filé, refogado com cebola roxa e molho barbecue. Acompanha batata frita.
-ENTRADA
+Batata Frita Especial|30.00|Batatas fritas cobertas de queijo muçarela derretido e bacon crocante|ENTRADA
+Camarão Milanesa|69.00|Camarão à milanesa com gergelim. Acompanha molho tártaro.|ENTRADA
+Camarão Recife|50.00|Camarões inteiros (com casca e cabeça) marinados na cerveja, levemente empanados,fritos e refogados com cebola e alho.|ENTRADA
+Couvert Especial|60.00|Camarões marinados, tomate seco com queijo minas frescal temperado, tomates grelhados com alho frito, caponata de berinjela e ceviche de salmão. Acompanha torradastemperadas e pães de queijo.|ENTRADA
+Croquete de Bacalhau|35.00|Servido com molho tártaro.|ENTRADA
+Filé com Fritas|73.00|300g de cubos de filé, refogado com cebola roxa e molho barbecue. Acompanha batata frita.|ENTRADA
 
