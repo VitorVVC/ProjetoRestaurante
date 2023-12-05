@@ -3,7 +3,9 @@ package Model.Entities;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public abstract class Pessoa {
+import static Application.Util.dateTimeFormatter;
+
+public class Pessoa {
 
     private String nome;
     private String email;
@@ -19,6 +21,19 @@ public abstract class Pessoa {
         this.id = id;
         this.telefone = telefone;
         this.nascimento = nascimento;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Pessoa{" +
+                "nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", senha='" + senha + '\'' +
+                ", id=" + id +
+                ", telefone='" + telefone + '\'' +
+                ", nascimento=" + nascimento +
+                '}';
     }
 
     public Pessoa() {

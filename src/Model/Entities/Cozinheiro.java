@@ -1,2 +1,6 @@
-package Model.Entities;public class Cozinheiro {
+package Model.Entities;
+
+public class Cozinheiro extends Funcionario{
+
+
 }
