@@ -1,1 +1,2 @@
-Vitor Vitor@gmail.com senhaLegal 6106142 (85) 4002-8922 2005-04-19 (GERENTE)
+Vitor|Vitor@gmail.com|senhaLegal|6106142|(85) 4002-8922|2005-04-19|GERENTE
+Teste GARCOM|Garcom@gmail.com|senha garcom|2180625|(85) 1111-2222|2000-01-12|GARCOM
