@@ -1,342 +1,170 @@
 package Application;
 
-import Model.Entities.Cliente;
-import Model.Entities.Funcionario;
+import Model.Entities.*;
 import Model.Exceptions.DomainException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
+
 
 public class Util {
     public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static Scanner sc = new Scanner(System.in);
     public static final Pattern TELEFONE_PATTERN = Pattern.compile("\\(\\d{2}\\)\\s\\d{4,5}-\\d{4}");
 
+    // TODO: 04/12/23 --> Conferir CADA CLASSE !!
 
-    // TODO: 30/11/23 --> Considerar adicionar uma pessoa Gerente para "gerenciar" o negócio
-    // TODO: 30/11/23 --> Adicionar no método de login caso o usuario não tenha esquecido a senha ou ID e sim digitado errado
-    // TODO: 30/11/23 --> Todos os tratamentos de excecoes vierem seguidos de um runtime erro que pegue um erro desconhecido. Com -> throw new DomainException("Erro inesperado! --> " + e.getMessage());
-    // TODO: 01/12/23 --> Procurar forma de trocar a "forma" de texto quando o usuario receber uma mensagem do sistema
-
+    // TODO: 03/12/23 --> Cozinheiro --> Método: receberPedido(); --> Enviado pelo garçom aqui o cozinheiro recebe o nome do pedido e o produz
+    // TODO: 03/12/23 --> Cozinheiro --> chamarGarçom(); --> Método para notificar o garçom que o pedido já está pronto
     public static void principal() {
-        loginMethod();
+        Pessoa temp = loginMethod();
+        //System.out.println(temp);
+        actionMethod(temp);
     }
 
     // Método para logar o usuário no sistema do restaurante
     // Caso não possua login ele será redirecionado para o método criar conta
-    public static void loginMethod() {
-        System.out.println("Olá, seja bem vindo ao *La praiana*!!");
-        System.out.print("Você já possui cadastro no nosso restaurante? ");
+    public static Pessoa loginMethod() {
+        System.out.println(ConsoleColors.CYAN_BOLD + "Olá, seja bem-vindo ao *La praiana*!!");
+        System.out.println(ConsoleColors.PURPLE + "Você já possui cadastro no nosso restaurante? ");
+        System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
         String respond;
         do {
             try {
                 respond = sc.nextLine();
                 if (respond.equalsIgnoreCase("sim")) {
-                    loginExistente();
+                    return loginExistente();
                 } else if (respond.equalsIgnoreCase("não")) {
-                    System.out.println("Tudo bem. Vamos realizar o seu cadastro.");
-                    adicionarAoSistema();
+                    return adicionarAoSistema();
                 } else {
-                    System.out.print("Erro ao ler sua resposta, escreva novamente: ");
+                    System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "Erro ao identificar sua escrita, tente novamente: ");
                 }
-            } catch (InputMismatchException e) {
-                throw new DomainException("Não foi possivel identificar sua escrita por favor recarregue o progama.");
             } catch (RuntimeException e) {
                 throw new DomainException("Erro inesperado! --> " + e.getMessage());
             }
         } while (!respond.equalsIgnoreCase("sim") && !respond.equalsIgnoreCase("não"));
+        return null;
     }
 
-    // Método para auxiliar o loginMethod().
-    private static void loginExistente() {
-        Character resp;
-        String ID;
-        String senha;
 
-        System.out.println("Que incrivel! Seja bem vindo de volta.");
-        System.out.println("Por favor diga-me qual seu ID e senha ");
+    public static Pessoa loginExistente() {
+        System.out.println(ConsoleColors.CYAN_BOLD + "Que incrível! Seja bem-vindo de volta.");
+        System.out.println(ConsoleColors.BLUE_BRIGHT + "Cliente" + ConsoleColors.CYAN_BOLD + " ou " + ConsoleColors.BLUE_BRIGHT + "Funcionário? ");
+        System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
+        String cOuF;
         do {
-            System.out.print("ID: ");
-            ID = sc.nextLine();
-            System.out.print("Senha: ");
-            senha = sc.nextLine();
-            if (verificarCredenciais(senha, ID)) {
-                System.out.println("Processo realizado com sucesso! Seja bem vindo novamente ");
+            cOuF = sc.nextLine();
+            if (cOuF.equalsIgnoreCase("cliente")) {
+                return new Cliente().metodoLoginCliente();
+            } else if (cOuF.equalsIgnoreCase("funcionário")) {
+                return new Funcionario().metodoLoginFuncionario();
             } else {
-                System.out.print("Esqueceu seu ID ou Senha? (Sim ou não) ");
-                String temp = sc.nextLine();
-                if (temp.equalsIgnoreCase("sim")) {
-                    System.out.print("Deseja resgatar seu ID ou Senha? ");
-                    String idOuSenha = sc.nextLine();
-                    if (idOuSenha.equalsIgnoreCase("id")) {
-                        recuperarID();
-                    }
-                    if (idOuSenha.equalsIgnoreCase("senha")) {
-                        System.out.print("Você deseja recuperar sua senha (1) ou reescreve-la? (2): ");
-                    }
-                    do {
-                        resp = sc.nextLine().charAt(0);
-                        if (resp.equals('1')) {
-                            recuperarSenha();
-                        }
-                        if (resp.equals('2')) {
-                            System.out.print("Forneca-me seu nome: ");
-                            String nome = sc.nextLine();
-                            System.out.print("Forneca-me seu email atrelado a nossa instituição: ");
-                            String email = sc.nextLine();
-                            reescreverSenha(nome, email, ID);
-                        } else {
-                            System.out.print("Não foi possivel identificar sua resposta, digite novamente: ");
-                        }
-                    } while (!resp.equals('1') && !resp.equals('2'));
-                } else if (temp.equalsIgnoreCase("não")) {
-                    System.out.println("Reescreva seus dados");
-                }
+                System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "Erro ao identificar sua escrita, tente novamente: ");
             }
-        } while (!verificarCredenciais(ID, senha));
+        } while (!cOuF.equalsIgnoreCase("cliente") && !cOuF.equalsIgnoreCase("funcionário"));
+        return null;
     }
 
-
-    // Método para adicionar um novo usuário ao sistema
-    public static void adicionarAoSistema() {
-        System.out.print("Você é um funcionário ou cliente? ");
+    public static Pessoa adicionarAoSistema() {
+        Pessoa p = null;
+        System.out.println(ConsoleColors.CYAN_BOLD + "Tudo bem, vamos criar uma conta para você.");
+        System.out.println(ConsoleColors.PURPLE + "Você é um " + ConsoleColors.BLUE_BRIGHT + "Cliente" + ConsoleColors.PURPLE + " ou " + ConsoleColors.BLUE_BRIGHT + "Funcionário? ");
+        System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
         String resposta;
         do {
             resposta = sc.nextLine();
             try {
                 if (resposta.equalsIgnoreCase("funcionário")) {
-                    Funcionario tempFunc = new Funcionario();
-                    tempFunc.metodoCriarContaFuncionario();
+                    p = new Funcionario().metodoCriarContaFuncionario();
                 } else if (resposta.equalsIgnoreCase("cliente")) {
-                    Cliente tempCliente = new Cliente();
-                    tempCliente.metodoCriarContaCliente();
+                    p = new Cliente().metodoCriarContaCliente();
                 } else {
-                    System.out.print("Não entendi sua resposta, por favor reescreva: ");
+                    System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "Erro ao identificar sua escrita, tente novamente: ");
                 }
-            } catch (DomainException e) {
-                System.out.println("Erro no progama: " + e.getMessage());
+            } catch (RuntimeException e) {
+                throw new DomainException("Erro inesperado! --> " + e.getMessage());
             }
         } while (!resposta.equalsIgnoreCase("funcionário") && !resposta.equalsIgnoreCase("cliente"));
+        System.out.println(ConsoleColors.RESET);
+        return p;
     }
 
-
-    // Método para conferir as credenciais para assim realizar o login
-    public static boolean verificarCredenciais(String senha, String ID) {
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner sc = new Scanner(file);
-
-            while (sc.hasNextLine()) {
-                String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
-
-                // Verificar se a linha contém informações suficientes
-                try {
-                    if (partes.length >= 3) {
-                        String senhaArquivo = partes[2];
-                        String IDArquivo = partes[3];
-
-                        if (senhaArquivo.equalsIgnoreCase(senha) && IDArquivo.equalsIgnoreCase(ID)) {
-                            // Usuário encontrado no arquivo
-                            return true;
-                        }
-                    }
-                } catch (NoSuchElementException e) {
-                    throw new DomainException("Não foi possivel identificar ID ou SENHA.");
-                }
+    public static void actionMethod(Pessoa pessoa) {
+        if (pessoa instanceof Cliente) {
+            actionClienteMethod((Cliente) pessoa);
+        } else if (pessoa instanceof Funcionario) {
+            if (pessoa instanceof Garcom) {
+                actionGarconMethod((Garcom) pessoa);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
         }
-        // Usuário não encontrado no arquivo
-        return false;
     }
 
-    // Método "recuperar credenciais ID" para auxiliar o método recuperar ID
-    public static boolean recuperarCredenciaisID(String nome, String email) {
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner sc = new Scanner(file);
+    public static void actionClienteMethod(Cliente pessoa) {
+        boolean continuar = true;
 
-            while (sc.hasNextLine()) {
-                String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
+        while (continuar) {
+            System.out.println(ConsoleColors.CYAN_BOLD + "Olá " + pessoa.getNome());
+            System.out.println(ConsoleColors.CYAN_BOLD + "Sua lista de possíveis ações: ");
+            System.out.printf(ConsoleColors.BLUE_BRIGHT + "Opções:%n[1] --> Visualizar Cardápios%n[2] --> Realizar Pedido%n[3] --> Chamar garçom%n[4] --> Pagamento%n[0] --> Encerrar%n");
+            System.out.println(ConsoleColors.CYAN_BOLD + "Qual desses você deseja realizar?");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
+            char resposta = sc.nextLine().charAt(0);
 
-                // Verificar se a linha contém informações suficientes
-                if (partes.length >= 3) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
-
-                    if (nomeArquivo.equalsIgnoreCase(nome) && emailArquivo.equalsIgnoreCase(email)) {
-                        // Usuário encontrado no arquivo
-                        return true;
-                    }
-                }
+            switch (resposta) {
+                case '1':
+                    Pedidos.cardapioGeral();
+                    break;
+                case '2':
+                    pessoa.pedido(pessoa);
+                    break;
+                case '3':
+                    pessoa.chamarGarcom();
+                    break;
+                case '4':
+                    pessoa.pagamento(pessoa);
+                    break;
+                case '0':
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Opção inválida. Por favor, escolha uma opção válida.");
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
         }
-        // Usuário não encontrado no arquivo
-        return false;
+        System.out.println(ConsoleColors.CYAN_BOLD + "Encerrando a interação com o cliente.");
     }
 
-    // Método auxiliar de recuperarID(). Que no método abaixo retorna o ID do usuário em String para podermos exibi-lo
-    public static String retornaID(String nome, String email) {
-        String idArquivo = null;
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner sc = new Scanner(file);
+    public static void actionGarconMethod(Garcom pessoa) {
+        boolean continuar = true;
 
-            while (sc.hasNextLine()) {
-                String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
+        while (continuar) {
+            System.out.println(ConsoleColors.CYAN_BOLD + "Olá " + pessoa.getNome() + " seja bem vindo(a) ao simulador de funções!");
+            System.out.println(ConsoleColors.CYAN_BOLD + "Sua lista de possíveis ações: ");
+            System.out.printf(ConsoleColors.BLUE_BRIGHT + "Opções:%n[1] --> Chamado%n[2] --> Anotar Pedido%n[3] --> Mostrar Cardápio%n[0] --> Encerrar%n");
+            System.out.println(ConsoleColors.CYAN_BOLD + "Qual desses você deseja realizar?");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
+            char resposta = sc.nextLine().charAt(0);
 
-                // Verificar se a linha contém informações suficientes
-                if (partes.length >= 3) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
-
-                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
-                        idArquivo = partes[3];
-                    }
-                }
+            switch (resposta) {
+                case '1':
+                    Random random = new Random();
+                    int valorRandom = random.nextInt(2) + 1;
+                    pessoa.chamado(valorRandom);
+                    break;
+                case '2':
+                    pessoa.anotarPedidoPersonalizado();
+                    break;
+                case '3':
+                    pessoa.mostrarCardapio();
+                    break;
+                case '0':
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Opção inválida. Por favor, escolha uma opção válida.");
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
         }
-        return idArquivo;
-    }
-
-    // Método para recuperar a ID do usuário
-    private static void recuperarID() {
-        System.out.println("Para recuperar por favor forneça os dados a seguir: ");
-        System.out.print("Nome: ");
-        String nome = sc.nextLine();
-        System.out.print("Email: ");
-        String email = sc.nextLine();
-        if (recuperarCredenciaisID(nome, email)) {
-            System.out.println("ID Recuperada com sucesso !");
-            System.out.println("Sua ID: " + retornaID(nome, email));
-        } else {
-            System.out.println("Não foi possivel recuperar seu ID");
-        }
-    }
-
-    public static boolean recuperarCredenciaisSenha(String nome, String email) {
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner sc = new Scanner(file);
-
-            while (sc.hasNextLine()) {
-                String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
-
-                // Verificar se a linha contém informações suficientes
-                if (partes.length >= 3) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
-
-                    if (nomeArquivo.equalsIgnoreCase(nome) && emailArquivo.equalsIgnoreCase(email)) {
-                        // Usuário encontrado no arquivo
-                        return true;
-                    }
-                }
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
-        }
-        // Usuário não encontrado no arquivo
-        return false;
-    }
-
-    // Método para recuperar a senha do usuário
-    private static void recuperarSenha() {
-        System.out.println("Para recuperar por favor forneça os dados a seguir: ");
-        System.out.print("Nome: ");
-        String nome = sc.nextLine();
-        System.out.print("Email: ");
-        String email = sc.nextLine();
-        if (recuperarCredenciaisSenha(nome, email)) {
-            System.out.println("Senha recuperada com sucesso !");
-            System.out.println("Sua senha: " + retornaSenha(nome, email));
-        } else {
-            System.out.println("Não foi possivel recuperar sua senha");
-        }
-    }
-
-    // Método para auxiliar o retorno de senha do usuario. Retornando a senha já "resgatada"
-    private static String retornaSenha(String nome, String email) {
-        String senhaArquivo = null;
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner sc = new Scanner(file);
-
-            while (sc.hasNextLine()) {
-                String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
-
-                // Verificar se a linha contém informações suficientes
-                if (partes.length >= 3) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
-
-                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
-                        senhaArquivo = partes[2];
-                    }
-                }
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
-        }
-        return senhaArquivo;
-    }
-
-    // Método para "reescrever a senha"
-    private static void reescreverSenha(String nome, String email, String ID) {
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner scFile = new Scanner(file);
-
-            List<String> linhas = new ArrayList<>();
-
-            while (scFile.hasNextLine()) {
-                String linha = scFile.nextLine();
-                String[] partes = linha.split(" ");
-
-
-                // Verificar se a linha contém informações suficientes
-                if (partes.length >= 3) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
-                    String idArquivo = partes[3];
-
-                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo) && ID.equalsIgnoreCase(idArquivo)) {
-                        System.out.print("Escreva sua nova senha: ");
-                        String newSenha = sc.nextLine();
-
-                        linha = nomeArquivo + " " + emailArquivo + " " + newSenha + " " + idArquivo;
-                    }
-                }
-                linhas.add(linha);
-            }
-            try (FileWriter fileWriter = new FileWriter(file)) {
-                for (String linha : linhas) {
-                    fileWriter.write(linha + "\n");
-                }
-            } catch (IOException e) {
-                System.out.println("Erro na escrita do progama.");
-            } catch (RuntimeException e) {
-                System.out.println("Erro inesperado: " + e.getMessage());
-                e.getStackTrace();
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
-        }
+        System.out.println(ConsoleColors.CYAN_BOLD + "Encerrando a interação teste com garçom.");
     }
 
 }
