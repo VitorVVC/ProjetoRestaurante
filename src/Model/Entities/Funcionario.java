@@ -39,22 +39,15 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
         String telefone;
         LocalDate nascimento;
         try {
-            // Pede o nome do usuário
             System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Qual seu nome: ");
             nome = sc.nextLine();
             System.out.println(ConsoleColors.CYAN_BOLD + "Olá " + nome + ", seja muito bem vindo(a)!");
-            // Pede o email do usuário
             System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Forneça seu email: ");
             loginEmail = sc.nextLine();
-            // Enquanto o email não atender as exigências -->
-            // Possuir ao menos um digito em formato string
-            // e colocar @gmail.com
-            // Ele ficará em um loop, forçando o usuário a ter de atender tais exigências
             while (!loginEmail.matches("(?=.*[aA])[a-zA-Z0-9]+@gmail\\.com")) {
                 System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "Não foi possivel identificar seu email, reescreva: ");
                 loginEmail = sc.nextLine();
             }
-            // Pede a senha duas vezes e as compara, enquanto não forem iguais repete o processo
             System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Forneça uma senha: ");
             loginSenha = sc.nextLine();
             System.out.print("Confirme a senha escrevendo-a novamente: ");
@@ -63,14 +56,12 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
                 System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "As senhas não estão iguais, reescreva novamente: ");
                 loginSenhaConfirm = sc.nextLine();
             }
-            // Pede o telefone e o valida com a função validarTelefone();
             System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Digite também o seu telefone EX: (85) 1234-5678: ");
             telefone = sc.nextLine();
             while (!validarTelefone(telefone)) {
                 System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "Não foi possivel identificar seu numero de celular, reescreva: ");
                 telefone = sc.nextLine();
             }
-            // Pede a data de nascimento do cliente e fica em um loop caso ela não atenda o formato esperado ( dd/ mm / yyyy )
             System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Agora forneca-me a sua data de nascimento (dd/MM/yyyy): ");
             boolean dataValida = false;
             nascimento = null;
@@ -90,8 +81,8 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
         System.out.println(ConsoleColors.PURPLE + "Qual sua função no restaurante? ");
         System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
-        String pratoStr = sc.nextLine();
-        Cargos cargo = Cargos.valueOf(pratoStr.toUpperCase());
+        String cargoStr = sc.nextLine();
+        Cargos cargo = Cargos.valueOf(cargoStr.toUpperCase());
         String senha;
         switch (cargo) {
             case GARCOM, COZINHEIRO -> System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Seja bem vindo");
@@ -116,9 +107,8 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
         File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
 
-        String cargoComParenteses = "(" + cargo + ")";
         try (FileWriter fileWriter = new FileWriter(file, true)) {
-            fileWriter.write(nome + " " + loginEmail + " " + loginSenha + " " + newId + " " + telefone + " " + nascimento + " " + cargoComParenteses + "\n");
+            fileWriter.write(nome + "|" + loginEmail + "|" + loginSenha + "|" + newId + "|" + telefone + "|" + nascimento + "|" + cargo + "\n");
         } catch (IOException e) {
             throw new DomainException("Erro na escrita do programa.");
         } catch (RuntimeException e) {
@@ -126,9 +116,21 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
         } finally {
             System.out.println(ConsoleColors.CYAN_BOLD + "Processo de cadastro finalizado!");
         }
-        Funcionario funcAdicionado = new Funcionario(nome, loginEmail, loginSenha, newId, telefone, nascimento, cargo);
-        funcionarios.add(funcAdicionado);
-        return funcAdicionado;
+        if (cargo.equals(Cargos.GARCOM)) {
+            Funcionario funcAdicionado = new Garcom(nome, loginEmail, loginSenha, newId, telefone, nascimento, cargo);
+            funcionarios.add(funcAdicionado);
+            return funcAdicionado;
+        }
+        else if (cargo.equals(Cargos.COZINHEIRO)) {
+            Funcionario funcAdicionado = new Cozinheiro(nome, loginEmail, loginSenha, newId, telefone, nascimento, cargo);
+            funcionarios.add(funcAdicionado);
+            return funcAdicionado;
+        } else {
+            Funcionario funcAdicionado = new Funcionario(nome, loginEmail, loginSenha, newId, telefone, nascimento, cargo);
+            funcionarios.add(funcAdicionado);
+            return funcAdicionado;
+        }
+
     }
 
     // Método para dar suporte a escrita de um novo funcionário
@@ -151,8 +153,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
             if (verificarCredenciaisFuncionarios(senha, ID)) {
                 System.out.println(ConsoleColors.CYAN_BOLD + "Processo realizado com sucesso! Seja bem-vindo novamente ");
-                Funcionario retorno = lerInformacoesFuncionario(ID);
-                return retorno;
+                return lerInformacoesFuncionario(ID);
             } else {
                 System.out.print(ConsoleColors.PURPLE + "Esqueceu seu ID ou Senha? (Sim ou não) ");
                 String temp = sc.nextLine();
@@ -191,18 +192,19 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
     }
 
     // Método para retornar o funcionario
-    private Funcionario lerInformacoesFuncionario(String email) {
+    private Funcionario lerInformacoesFuncionario(String ID) {
         File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
         try {
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 String linha = scanner.nextLine();
-                String[] partes = linha.split(" ");
+                String[] partes = linha.split("\\|"); //Usando pipe como delimitador
 
                 // Verifica se a linha contém as informações do funcionário com o e-mail fornecido
-                if (partes.length >= 3 && partes[1].equals(email)) {
+                if (partes.length == 7 && partes[3].equals(ID)) {
                     // Crie uma instância de Funcionario com base nas informações do arquivo
                     String nome = partes[0];
+                    String email = partes[1];
                     String senha = partes[2];
                     Integer id = Integer.valueOf(partes[3]);
                     String telefone = partes[4];
@@ -224,24 +226,20 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
     // Método para conferir as credenciais para assim realizar o login
     private boolean verificarCredenciaisFuncionarios(String senha, String ID) {
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner sc = new Scanner(file);
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
 
+        try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
+                String[] partes = linha.split("\\|"); // Usando pipe como delimitador
 
                 // Verificar se a linha contém informações suficientes
                 try {
-                    if (partes.length >= 7) {
-                        String senhaArquivo = partes[2];
-                        String IDArquivo = partes[3];
-
-                        if (senhaArquivo.equalsIgnoreCase(senha) && IDArquivo.equalsIgnoreCase(ID)) {
-                            // Usuário encontrado no arquivo
-                            return true;
-                        }
+                    String senhaArquivo = partes[2];
+                    String idArquivo = partes[3];
+                    if (senhaArquivo.equals(senha) && idArquivo.equals(ID)) {
+                        // Usuário encontrado no arquivo
+                        return true;
                     }
                 } catch (NoSuchElementException e) {
                     throw new DomainException("Não foi possivel identificar ID ou SENHA.");
@@ -288,7 +286,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
             while (sc.hasNextLine()) {
                 String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
+                String[] partes = linha.split("\\|");
 
                 // Verificar se a linha contém informações suficientes
                 if (partes.length >= 7) {
@@ -317,22 +315,20 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
             while (sc.hasNextLine()) {
                 String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
+                String[] partes = linha.split("\\|"); // Usando pipe como delimitador
 
                 // Verificar se a linha contém informações suficientes
-                if (partes.length >= 7) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
+                String nomeArquivo = partes[0];
+                String emailArquivo = partes[1];
 
-                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
-                        idArquivo = partes[3];
-                    }
+                if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
+                    return partes[3];
                 }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
         }
-        return idArquivo;
+        return null;
     }
 
 
@@ -346,14 +342,12 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
                 String[] partes = linha.split(" ");
 
                 // Verificar se a linha contém informações suficientes
-                if (partes.length >= 7) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
+                String nomeArquivo = partes[0];
+                String emailArquivo = partes[1];
 
-                    if (nomeArquivo.equalsIgnoreCase(nome) && emailArquivo.equalsIgnoreCase(email)) {
-                        // Usuário encontrado no arquivo
-                        return true;
-                    }
+                if (nomeArquivo.equalsIgnoreCase(nome) && emailArquivo.equalsIgnoreCase(email)) {
+                    // Usuário encontrado no arquivo
+                    return true;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -388,73 +382,54 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
     // Método para auxiliar o retorno de senha do usuario. Retornando a senha já "resgatada"
     private String retornaSenha(String nome, String email) {
         String senhaArquivo = null;
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner sc = new Scanner(file);
-
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+        try (Scanner sc = new Scanner(file);) {
             while (sc.hasNextLine()) {
                 String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
+                String[] partes = linha.split("\\|");
 
                 // Verificar se a linha contém informações suficientes
-                if (partes.length >= 7) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
+                String nomeArquivo = partes[0];
+                String emailArquivo = partes[1];
 
-                    // Comparar nome e email sem diferenciar maiúsculas de minúsculas
-                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
-                        senhaArquivo = partes[2];
-                        break;  // Sair do loop quando encontrar a correspondência
-                    }
+                // Comparar nome e email sem diferenciar maiúsculas de minúsculas
+                if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
+                    return partes[2];
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
+            throw new DomainException("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
+        } catch (RuntimeException e) {
+            throw new DomainException("Erro inesperado! --> " + e.getMessage());
         }
-        return senhaArquivo;
+        return null;
     }
 
 
     // Método para "reescrever a senha"
     private static void reescreverSenha(String nome, String email, String ID) {
-        try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
-            Scanner scFile = new Scanner(file);
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
 
+        try (Scanner scFile = new Scanner(file)) {
             List<String> linhas = new ArrayList<>();
 
             while (scFile.hasNextLine()) {
                 String linha = scFile.nextLine();
-                String[] partes = linha.split(" ");
+                String[] partes = linha.split("\\|");
 
-                if (partes.length >= 7) {
-                    String nomeArquivo = partes[0];
-                    String emailArquivo = partes[1];
-                    String idArquivo = partes[3];
+                String nomeArquivo = partes[0];
+                String emailArquivo = partes[1];
+                String idArquivo = partes[3];
 
-                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo) && ID.equalsIgnoreCase(idArquivo)) {
-                        System.out.print("Escreva sua nova senha: ");
-                        String newSenha = sc.nextLine();
+                if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo) && ID.equalsIgnoreCase(idArquivo)) {
+                    System.out.print("Escreva sua nova senha: ");
+                    String newSenha = sc.nextLine();
 
-                        StringBuilder novaLinha = new StringBuilder();
-                        for (int i = 0; i < partes.length; i++) {
-                            if (i == 2) {
-                                novaLinha.append(newSenha);
-                            } else {
-                                novaLinha.append(partes[i]);
-                            }
-
-                            if (i < partes.length - 1) {
-                                novaLinha.append(" ");
-                            }
-                        }
-
-                        linha = novaLinha.toString();
-                    }
+                    partes[2] = newSenha; // Atualiza a senha
+                    linha = String.join("|", partes);
                 }
                 linhas.add(linha);
             }
-
             try (FileWriter fileWriter = new FileWriter(file)) {
                 for (String linha : linhas) {
                     fileWriter.write(linha + "\n");
@@ -465,6 +440,19 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
         } catch (FileNotFoundException e) {
             throw new DomainException("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Nome: " + getNome() + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Email: " + getEmail() + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "ID: " + getId() + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Telefone: " + getTelefone() + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Nascimento: " + getNascimento().format(dateTimeFormatter) + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Cargo: " + getCargo() + "\n");
+
+        return sb.toString();
     }
 
     public Cargos getCargo() {
