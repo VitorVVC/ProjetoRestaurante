@@ -1,6 +1,5 @@
 package Model.Entities;
 
-import Model.Enums.Cargos;
 import Model.Exceptions.DomainException;
 import Model.Enums.TiposDePrato;
 
@@ -17,17 +16,20 @@ import static Application.Util.*;
 import static Model.Entities.Pedidos.cardapioGeral;
 
 public class Cliente extends Pessoa implements InterfaceCliente {
-
+    // Parametro extra que todo cliente tem sobre pessoa
     Double valorPagar;
 
+    // Construtor padrão
     public Cliente(String nome, String email, String senha, Integer id, String telefone, LocalDate nascimento) {
         super(nome, email, senha, id, telefone, nascimento);
         valorPagar = 0.0;
     }
 
+    // Construtor para testes
     public Cliente() {
     }
 
+    // Método sobrescrito por interface
     @Override
     public Cliente metodoCriarContaCliente() {
         String nome;
@@ -37,30 +39,30 @@ public class Cliente extends Pessoa implements InterfaceCliente {
         String telefone;
         LocalDate nascimento;
         try {
-            System.out.print("Qual seu nome: ");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Qual seu nome: ");
             nome = sc.nextLine();
-            System.out.println("Olá " + nome + ", seja muito bem vindo(a)!");
-            System.out.print("Forneça seu email: ");
-            loginEmail = sc.nextLine(); // TODO: 30/11/23
+            System.out.println(ConsoleColors.CYAN_BOLD + "Olá " + nome + ", seja muito bem vindo(a)!");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Forneça seu email: ");
+            loginEmail = sc.nextLine();
             while (!loginEmail.matches("(?=.*[aA])[a-zA-Z0-9]+@gmail\\.com")) {
-                System.out.print("Não foi possivel identificar seu email, reescreva: ");
+                System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "Não foi possivel identificar seu email, reescreva: ");
                 loginEmail = sc.nextLine();
             }
-            System.out.print("Forneça uma senha: ");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Forneça uma senha: ");
             loginSenha = sc.nextLine();
-            System.out.print("Confirme a senha escrevendo-a novamente: ");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Confirme a senha escrevendo-a novamente: ");
             loginSenhaConfirm = sc.nextLine();
             while (!loginSenha.equalsIgnoreCase(loginSenhaConfirm)) {
-                System.out.print("As senhas não estão iguais, reescreva novamente: ");
+                System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "As senhas não estão iguais, reescreva novamente: ");
                 loginSenhaConfirm = sc.nextLine();
             }
-            System.out.print("Digite também o seu telefone EX: (85) 1234-5678: ");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Digite também o seu telefone EX: (85) 1234-5678: ");
             telefone = sc.nextLine();
             while (!validarTelefone(telefone)) {
-                System.out.print("Não foi possivel identificar seu numero de celular, reescreva: ");
+                System.out.print(ConsoleColors.RED_BOLD_BRIGHT + "Não foi possivel identificar seu numero de celular, reescreva: ");
                 telefone = sc.nextLine();
             }
-            System.out.print("Agora forneca-me a sua data de nascimento (dd/MM/yyyy): ");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Agora forneca-me a sua data de nascimento (dd/MM/yyyy): ");
             boolean dataValida = false;
             nascimento = null;
 
@@ -69,20 +71,20 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                     String dataInput = sc.nextLine();
                     nascimento = LocalDate.parse(dataInput, dateTimeFormatter);
                     dataValida = true;
-                } catch (DateTimeParseException e) {
-                    System.out.print("Formato de data inválido. Digite novamente (dd/MM/yyyy): ");
+                } catch (
+                        DateTimeParseException e) { // Neste catch usamos syso pois é um loop até validar a data escrita
+                    System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Formato de data inválido!");
+                    System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Digite novamente (dd/MM/yyyy): ");
                 }
             }
         } catch (InputMismatchException e) {
             throw new DomainException("Valor escrito não foi lido corretamente" + e.getMessage());
-        } finally {
-            System.out.println("Processo de cadastro finalizado!");
         }
         try {
             // Geração do ID
             Random geraID = new Random();
             int newId = 1000000 + geraID.nextInt(9000000);
-            System.out.println("Seu ID é: " + newId);
+            System.out.println(ConsoleColors.CYAN_BOLD + "Seu ID é: " + newId);
 
             // Construção da linha para escrever no arquivo
             String linha = nome + "|" + loginEmail + "|" + loginSenha + "|" + newId + "|" + telefone + "|" + nascimento + "\n";
@@ -94,26 +96,28 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                 fileWriter.write(linha);
                 fileWriter.close();
             } catch (IOException e) {
-                System.out.println("Erro na escrita do progama.");
+                throw new DomainException("Erro na escrita do progama.");
             } catch (RuntimeException e) {
-                System.out.println("Erro inesperado: " + e.getMessage());
+                throw new DomainException("Erro inesperado: " + e.getMessage());
             }
 
             return new Cliente(nome, loginEmail, loginSenha, newId, telefone, nascimento);
         } catch (InputMismatchException e) {
             throw new DomainException("Valor escrito não foi lido corretamente" + e.getMessage());
         } finally {
-            System.out.println("Processo de cadastro finalizado!");
+            System.out.println(ConsoleColors.CYAN_BOLD + "Processo de cadastro finalizado!");
         }
     }
 
-
+    // Método auxiliar para criação da conta
     private boolean validarTelefone(String telefone) {
         Matcher matcher = TELEFONE_PATTERN.matcher(telefone);
         return matcher.matches();
     }
 
-    public static Pessoa metodoLoginCliente() {
+    // Método para logar o cliente
+    @Override
+    public Pessoa metodoLoginCliente() {
         String ID;
         String senha;
 
@@ -128,7 +132,8 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                 System.out.println(ConsoleColors.CYAN_BOLD + "Processo realizado com sucesso! Seja bem-vindo novamente ");
                 return lerInformacoesCliente(ID);
             } else {
-                System.out.print(ConsoleColors.PURPLE + "Esqueceu seu ID ou Senha? (Sim ou não) ");
+                System.out.println(ConsoleColors.PURPLE + "Esqueceu seu ID ou Senha? (Sim ou não) ");
+                System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
                 String temp = sc.nextLine();
 
                 if (temp.equalsIgnoreCase("sim")) {
@@ -165,7 +170,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     }
 
     // Método para retornar o funcionario
-    private static Cliente lerInformacoesCliente(String ID) {
+    private Cliente lerInformacoesCliente(String ID) {
         File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
         try (Scanner scanner = new Scanner(file)) {
@@ -193,7 +198,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
 
 
     // Método para conferir as credenciais para assim realizar o login
-    private static boolean verificarCredenciaisFuncionarios(String senha, String ID) {
+    private boolean verificarCredenciaisFuncionarios(String senha, String ID) {
         try {
             File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
@@ -203,12 +208,10 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                     String[] partes = linha.split("\\|"); // Usando o pipe como delimitador
 
                     try {
-                        //String nome = partes[0];
-                        //String email = partes[1];
                         String senhaArquivo = partes[2];
                         String IDArquivo = partes[3];
 
-                        if (senhaArquivo.equalsIgnoreCase(senha) && IDArquivo.equalsIgnoreCase(ID)) {
+                        if (senhaArquivo.equals(senha) && IDArquivo.equals(ID)) {
                             // Usuário encontrado no arquivo
                             return true;
                         }
@@ -232,7 +235,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
 
     // Método para recuperar a ID do usuário
     // Caso o tonto do usuário esqueça o email ai ele que entre no email pra procurar
-    private static void recuperarID() {
+    private void recuperarID() {
         System.out.println(ConsoleColors.CYAN_BOLD + "Para recuperar por favor forneça os dados a seguir: ");
         String nome;
         String email;
@@ -286,7 +289,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
 
 
     // Método auxiliar de recuperarID(). Que no método abaixo retorna o ID do usuário em String para podermos exibi-lo
-    private static String retornaID(String nome, String email) {
+    private String retornaID(String nome, String email) {
         try {
             File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
@@ -296,26 +299,24 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                     String[] partes = linha.split("\\|"); // Usando o pipe como delimitador
 
                     // Verificar se a linha contém informações suficientes
-                    if (partes.length >= 4) {
-                        String nomeArquivo = partes[0];
-                        String emailArquivo = partes[1];
+                    String nomeArquivo = partes[0];
+                    String emailArquivo = partes[1];
 
-                        if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
-                            return partes[3];
-                        }
+                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
+                        return partes[3];
                     }
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
+            throw new DomainException("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
         } catch (RuntimeException e) {
-            System.out.println("Erro inesperado! --> " + e.getMessage());
+            throw new DomainException("Erro inesperado! --> " + e.getMessage());
         }
-
         return null;
     }
 
-    private static boolean recuperarCredenciaisSenha(String nome, String email) {
+    // Método para recuperar a sua senha. Confere se o usuario existe
+    private boolean recuperarCredenciaisSenha(String nome, String email) {
         try {
             File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
@@ -325,14 +326,12 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                     String[] partes = linha.split("\\|"); // Usando o pipe como delimitador
 
                     // Verificar se a linha contém informações suficientes
-                    if (partes.length >= 6) {
-                        String nomeArquivo = partes[0];
-                        String emailArquivo = partes[1];
+                    String nomeArquivo = partes[0];
+                    String emailArquivo = partes[1];
 
-                        if (nomeArquivo.equalsIgnoreCase(nome) && emailArquivo.equalsIgnoreCase(email)) {
-                            // Usuário encontrado no arquivo
-                            return true;
-                        }
+                    if (nomeArquivo.equalsIgnoreCase(nome) && emailArquivo.equalsIgnoreCase(email)) {
+                        // Usuário encontrado no arquivo
+                        return true;
                     }
                 }
             }
@@ -348,7 +347,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
 
 
     // Método para recuperar a senha do usuário
-    private static void recuperarSenha() {
+    private void recuperarSenha() {
         System.out.println(ConsoleColors.CYAN_BOLD + "Para recuperar por favor forneça os dados a seguir: ");
         String nome;
         String email;
@@ -370,7 +369,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
 
 
     // Método para auxiliar o retorno de senha do usuario. Retornando a senha já "resgatada"
-    private static String retornaSenha(String nome, String email) {
+    private String retornaSenha(String nome, String email) {
         try {
             File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
@@ -380,28 +379,25 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                     String[] partes = linha.split("\\|"); // Usando o pipe como delimitador
 
                     // Verificar se a linha contém informações suficientes
-                    if (partes.length >= 6) {
-                        String nomeArquivo = partes[0];
-                        String emailArquivo = partes[1];
+                    String nomeArquivo = partes[0];
+                    String emailArquivo = partes[1];
 
-                        // Comparar nome e email sem diferenciar maiúsculas de minúsculas
-                        if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
-                            return partes[2];
-                        }
+                    // Comparar nome e email sem diferenciar maiúsculas de minúsculas
+                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo)) {
+                        return partes[2];
                     }
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
+            throw new DomainException("Não foi possível encontrar o arquivo fornecido: " + e.getMessage());
         } catch (RuntimeException e) {
-            System.out.println("Erro inesperado! --> " + e.getMessage());
+            throw new DomainException("Erro inesperado! --> " + e.getMessage());
         }
-
         return null;
     }
 
     // Método para "reescrever a senha"
-    private static void reescreverSenha(String nome, String email, String ID) {
+    private void reescreverSenha(String nome, String email, String ID) {
         try {
             File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
@@ -412,19 +408,17 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                     String linha = scFile.nextLine();
                     String[] partes = linha.split("\\|"); // Usando o pipe como delimitador
 
-                    if (partes.length >= 6) {
-                        String nomeArquivo = partes[0];
-                        String emailArquivo = partes[1];
-                        String idArquivo = partes[3];
+                    String nomeArquivo = partes[0];
+                    String emailArquivo = partes[1];
+                    String idArquivo = partes[3];
 
-                        if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo) && ID.equalsIgnoreCase(idArquivo)) {
-                            System.out.print("Escreva sua nova senha: ");
-                            String newSenha = sc.nextLine();
+                    if (nome.equalsIgnoreCase(nomeArquivo) && email.equalsIgnoreCase(emailArquivo) && ID.equalsIgnoreCase(idArquivo)) {
+                        System.out.print("Escreva sua nova senha: ");
+                        String newSenha = sc.nextLine();
 
-                            partes[2] = newSenha; // Atualiza a senha
+                        partes[2] = newSenha; // Atualiza a senha
 
-                            linha = String.join("|", partes);
-                        }
+                        linha = String.join("|", partes);
                     }
                     linhas.add(linha);
                 }
@@ -444,28 +438,27 @@ public class Cliente extends Pessoa implements InterfaceCliente {
         }
     }
 
-
     @Override
     public void pedido(Cliente c) {
-        System.out.println("Por favor leia nosso cardápio através do método cardapio e portanto decida qual será seu pedido.");
+        System.out.println(ConsoleColors.CYAN_BOLD + "Por favor leia nosso cardápio através do método cardapio e portanto decida qual será seu pedido.");
         String simOuNao;
         String resp;
         do {
             try {
-                System.out.println("Já leu nosso cardapio? (Sim ou não): ");
+                System.out.println(ConsoleColors.BLUE_BOLD_BRIGHT + "Já leu nosso cardapio? (Sim ou não): ");
                 System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
                 simOuNao = sc.nextLine();
                 if (simOuNao.equalsIgnoreCase("sim")) {
-                    System.out.print("Pois bem, qual tipo de prato você deseja consumir? ( Principal, Sobremesa ou Entrada? ) ");
+                    System.out.print(ConsoleColors.BLUE_BOLD_BRIGHT + "Pois bem, qual tipo de prato você deseja consumir? ( Principal, Sobremesa ou Entrada? ) ");
                     String escolhaStr = sc.nextLine();
                     TiposDePrato escolhaPrato = TiposDePrato.valueOf(escolhaStr.toUpperCase());
-                    realizarPedido(c, escolhaPrato);
+                    realizarPedido(escolhaPrato);
                 } else if (simOuNao.equalsIgnoreCase("não")) {
                     cardapioGeral();
-                    System.out.println("Agora que já viu o cardápio, nos diga..");
-                    System.out.print("Pois bem, qual tipo de prato você deseja consumir? (Principal? Sobremesa ou Entrada?) ");
-                    TiposDePrato escolhaPrato = TiposDePrato.valueOf(sc.nextLine().toUpperCase());
-                    realizarPedido(c, escolhaPrato);
+                    System.out.print(ConsoleColors.BLUE_BOLD_BRIGHT + "Pois bem, qual tipo de prato você deseja consumir? ( Principal, Sobremesa ou Entrada? ) ");
+                    String escolhaStr = sc.nextLine();
+                    TiposDePrato escolhaPrato = TiposDePrato.valueOf(escolhaStr.toUpperCase());
+                    realizarPedido(escolhaPrato);
                 } else {
                     System.out.print("Não entendi sua resposta, por favor reescreva: ");
                 }
@@ -473,16 +466,16 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                 throw new DomainException("Não foi possivel identificar o tipo de prato fornecido!" + e.getMessage());
             }
         } while (!simOuNao.equalsIgnoreCase("sim") && !simOuNao.equalsIgnoreCase("não"));
-        System.out.println("Deseja realizar outro pedido? ");
+        System.out.println(ConsoleColors.BLUE_BOLD_BRIGHT + "Deseja realizar outro pedido? ");
         do {
             System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
             resp = sc.nextLine();
             if (resp.equalsIgnoreCase("sim")) {
                 pedido(c);
             } else if (resp.equalsIgnoreCase("não")) {
-                System.out.println("Caso deseje realizar outro pedido estaremos a disposição");
+                System.out.println(ConsoleColors.CYAN_BOLD + "Caso deseje realizar outro pedido estaremos a disposição");
             } else {
-                System.out.println("Não foi possivel identificar sua resposta, por favor tente novamente");
+                System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Não foi possivel identificar sua resposta, por favor tente novamente");
             }
         } while (!resp.equalsIgnoreCase("sim") && !resp.equalsIgnoreCase("não"));
     }
@@ -490,80 +483,82 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     // Uma das 3 ações possiveis para o usuario
     public void chamarGarcom() {
         char resposta;
-        System.out.println("Qual o motivo de sua chamada?");
-        System.out.println("1 --> Quero ajuda com cardápio");
-        System.out.println("2 --> Pedido personalizado");
-        System.out.println("3 --> Comemorações especiais");
-        System.out.println("4 --> Pagamento da conta");
-        System.out.println("5 --> Outros");
+        System.out.println(ConsoleColors.BLUE_BOLD_BRIGHT + "Qual o motivo de sua chamada?");
+        System.out.println(ConsoleColors.CYAN_BOLD + "1 --> Quero ajuda com cardápio");
+        System.out.println(ConsoleColors.CYAN_BOLD + "2 --> Pedido personalizado");
+        System.out.println(ConsoleColors.CYAN_BOLD + "3 --> Comemorações especiais");
+        System.out.println(ConsoleColors.CYAN_BOLD + "4 --> Pagamento da conta");
+        System.out.println(ConsoleColors.CYAN_BOLD + "5 --> Outros");
         do {
             System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
             resposta = sc.nextLine().charAt(0);
             switch (resposta) {
                 case '1', '2', '3', '5':
-                    System.out.println("Garçom está a caminho");
+                    System.out.println(ConsoleColors.CYAN_BOLD + "Garçom está a caminho");
                     break;
                 case '4':
 
                     break;
                 default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                    System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Opção inválida. Tente novamente.");
             }
         } while (resposta != '1' && resposta != '2' && resposta != '3' && resposta != '4' && resposta != '5');
     }
 
     // Uma das 3 ações possiveis para o usuario
-    public void realizarPedido(Cliente c, TiposDePrato tiposDePrato) {
+    public void realizarPedido(TiposDePrato tiposDePrato) {
         String cardapioPrincipal = "/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Principal.txt";
-        String cardapioSobremesa = "/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Sobremesa.txt";
+        String cardapioSobremesa = "/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Sobremesas.txt";
         String cardapioEntrada = "/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Entrada.txt";
         String nome;
 
         if (tiposDePrato.equals(TiposDePrato.PRINCIPAL)) {
-            System.out.println("Do cardápio principal, qual nome do seu pedido?");
+            System.out.println(ConsoleColors.BLUE_BOLD_BRIGHT + "Do cardápio principal, qual nome do seu pedido?");
             do {
-                System.out.print("NOME: ");
+                System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "NOME: ");
                 nome = sc.nextLine();
                 if (compararCardapio(cardapioPrincipal, nome) && buscarPreco(cardapioPrincipal, nome) != null) {
                     valorPagar += buscarPreco(cardapioPrincipal, nome);
                     Random tempoPreparacao = new Random();
                     int random = tempoPreparacao.nextInt(5, 20);
-                    System.out.printf("Seu pedido está sendo preparado e em cerca de %d minutos você o receberá!%n", random);
-                    System.out.printf("Até então sua conta totaliza: %.2f%n", valorPagar); // TODO: 04/12/23 --> TESTAR !
+                    System.out.printf(ConsoleColors.BLUE_BOLD_BRIGHT + "Seu pedido está sendo preparado e em cerca de %d minutos você o receberá!%n", random);
+                    System.out.printf(ConsoleColors.BLUE_BOLD_BRIGHT + "Até então sua conta totaliza: %.2f%n", valorPagar); // TODO: 04/12/23 --> TESTAR !
                 }
             } while (!compararCardapio(cardapioPrincipal, nome));
         }
 
         if (tiposDePrato.equals(TiposDePrato.SOBREMESA)) {
-            System.out.println("Do cardápio de sobremesas, qual nome do seu pedido?");
+            System.out.println(ConsoleColors.BLUE_BOLD_BRIGHT + "Do cardápio de sobremesas, qual nome do seu pedido?");
             do {
-                System.out.print("NOME: ");
+                System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "NOME: ");
                 nome = sc.nextLine();
                 if (compararCardapio(cardapioSobremesa, nome) && buscarPreco(cardapioSobremesa, nome) != null) {
                     valorPagar += buscarPreco(cardapioSobremesa, nome);
                     Random tempoPreparacao = new Random();
                     int random = tempoPreparacao.nextInt(5, 20);
-                    System.out.printf("Seu pedido está sendo preparado e em cerca de %d minutos você o receberá!%n", random);
-                    System.out.printf("Até então sua conta totaliza: %.2f%n", valorPagar);
+                    System.out.printf(ConsoleColors.BLUE_BOLD_BRIGHT + "Seu pedido está sendo preparado e em cerca de %d minutos você o receberá!%n", random);
+                    System.out.printf(ConsoleColors.BLUE_BOLD_BRIGHT + "Até então sua conta totaliza: %.2f%n", valorPagar);
                 }
             } while (!compararCardapio(cardapioSobremesa, nome));
         }
 
         if (tiposDePrato.equals(TiposDePrato.ENTRADA)) {
-            System.out.println("Do cardápio de entrada, qual nome do seu pedido?");
+            System.out.println(ConsoleColors.BLUE_BOLD_BRIGHT + "Do cardápio de entrada, qual nome do seu pedido?");
             do {
-                System.out.print("NOME: ");
+                System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "NOME: ");
                 nome = sc.nextLine();
                 if (compararCardapio(cardapioEntrada, nome) && buscarPreco(cardapioEntrada, nome) != null) {
                     valorPagar += buscarPreco(cardapioEntrada, nome);
                     Random tempoPreparacao = new Random();
                     int random = tempoPreparacao.nextInt(5, 20);
-                    System.out.printf("Seu pedido está sendo preparado e em cerca de %d minutos você o receberá!%n", random);
-                    System.out.printf("Até então sua conta totaliza: %.2f%n", valorPagar);
+                    System.out.printf(ConsoleColors.BLUE_BOLD_BRIGHT + "Seu pedido está sendo preparado e em cerca de %d minutos você o receberá!%n", random);
+                    System.out.printf(ConsoleColors.BLUE_BOLD_BRIGHT + "Até então sua conta totaliza: %.2f%n", valorPagar);
                 }
             } while (!compararCardapio(cardapioEntrada, nome));
         }
     }
+
+    // Método para receber um arquivo / nome e procurar se ele realmente existe
     private static boolean compararCardapio(String arquivo, String nome) {
         try (Scanner scFile = new Scanner(new File(arquivo))) {
             while (scFile.hasNextLine()) {
@@ -578,10 +573,10 @@ public class Cliente extends Pessoa implements InterfaceCliente {
         } catch (Exception e) {
             throw new DomainException("Erro inesperado: " + e.getMessage());
         }
-
         return false;
     }
 
+    // Método para receber um arquivo / nome e retornar seu preço
     private Double buscarPreco(String arquivo, String nome) {
         Double precoPrato = null;
 
@@ -604,7 +599,6 @@ public class Cliente extends Pessoa implements InterfaceCliente {
         } catch (Exception e) {
             throw new DomainException("Erro inesperado: " + e.getMessage());
         }
-
         return precoPrato;
     }
 
@@ -618,21 +612,29 @@ public class Cliente extends Pessoa implements InterfaceCliente {
             System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
             formaPagamento = sc.nextLine().charAt(0);
             if (formaPagamento == '1') {
-                System.out.println("Garçom está a caminho com a máquina");
+                System.out.println(ConsoleColors.CYAN_BOLD + "Garçom está a caminho com a máquina");
             } else if (formaPagamento == '2') {
-                System.out.println("Garçom está a caminho com o QR Code de nosso restaurante");
+                System.out.println(ConsoleColors.CYAN_BOLD + "Garçom está a caminho com o QR Code de nosso restaurante");
             } else if (formaPagamento == '3') {
-                System.out.println("Garçom está a caminho para o acerto de contas");
+                System.out.println(ConsoleColors.CYAN_BOLD + "Garçom está a caminho para o acerto de contas");
             } else {
-                System.out.println("Não pude identificar sua resposta, tente novamente:");
+                System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Não pude identificar sua resposta, tente novamente:");
             }
         } while (formaPagamento != '1' && formaPagamento != '2' && formaPagamento != '3');
         p.setValorPagar(0.0);
     }
 
+    // toString() de cliente. Que não inclue todos os seus dados. Excluindo: Senha & totalPagar
     @Override
     public String toString() {
-        return String.format("Nome: %s|Email: %s|ID: %s|Telefone: %s|Data de nascimento:%s", getNome(), getEmail(), getTelefone(), getNascimento());
+        StringBuilder sb = new StringBuilder();
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Nome: " + getNome() + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Email: " + getEmail() + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "ID: " + getId() + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Telefone: " + getTelefone() + "\n");
+        sb.append(ConsoleColors.PURPLE_BRIGHT + "Nascimento: " + getNascimento().format(dateTimeFormatter) + "\n");
+
+        return sb.toString();
     }
 
     public Double getValorPagar() {
