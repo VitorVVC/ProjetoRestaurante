@@ -1,2 +1,2 @@
-Vitor Teste|vitor@gmail.com|senha123|4248786|(85) 1234-5678|2005-04-19
-testando teste|teste@gmail.com|senha nova|2753407|(85) 94002-8922|2001-11-11
+Vitor Teste|vitor@gmail.com|senha123|4248786|(85) 1234-5678|19/04/2005
+testando teste|teste@gmail.com|senha nova|2753407|(85) 94002-8922|11/11/2001
