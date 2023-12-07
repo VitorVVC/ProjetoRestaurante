@@ -14,12 +14,10 @@ public class Util {
     public static final Pattern TELEFONE_PATTERN = Pattern.compile("\\(\\d{2}\\)\\s\\d{4,5}-\\d{4}");
 
     // TODO: 04/12/23 --> Conferir CADA CLASSE !!
+    // TODO: 06/12/23 --> Adicionar comentários objetivos em cada método do código
 
-    // TODO: 03/12/23 --> Cozinheiro --> Método: receberPedido(); --> Enviado pelo garçom aqui o cozinheiro recebe o nome do pedido e o produz
-    // TODO: 03/12/23 --> Cozinheiro --> chamarGarçom(); --> Método para notificar o garçom que o pedido já está pronto
     public static void principal() {
         Pessoa temp = loginMethod();
-        //System.out.println(temp);
         actionMethod(temp);
     }
 
@@ -97,6 +95,9 @@ public class Util {
             if (pessoa instanceof Garcom) {
                 actionGarconMethod((Garcom) pessoa);
             }
+            else if (pessoa instanceof Cozinheiro) {
+                actionCozinheiroMethod((Cozinheiro) pessoa);
+            }
         }
     }
 
@@ -104,7 +105,7 @@ public class Util {
         boolean continuar = true;
 
         while (continuar) {
-            System.out.println(ConsoleColors.CYAN_BOLD + "Olá " + pessoa.getNome());
+            System.out.println(ConsoleColors.CYAN_BOLD + "\nOlá " + pessoa.getNome());
             System.out.println(ConsoleColors.CYAN_BOLD + "Sua lista de possíveis ações: ");
             System.out.printf(ConsoleColors.BLUE_BRIGHT + "Opções:%n[1] --> Visualizar Cardápios%n[2] --> Realizar Pedido%n[3] --> Chamar garçom%n[4] --> Pagamento%n[0] --> Encerrar%n");
             System.out.println(ConsoleColors.CYAN_BOLD + "Qual desses você deseja realizar?");
@@ -138,7 +139,7 @@ public class Util {
         boolean continuar = true;
 
         while (continuar) {
-            System.out.println(ConsoleColors.CYAN_BOLD + "Olá " + pessoa.getNome() + " seja bem vindo(a) ao simulador de funções!");
+            System.out.println(ConsoleColors.CYAN_BOLD + "\nOlá " + pessoa.getNome() + " seja bem vindo(a) ao simulador de funções!");
             System.out.println(ConsoleColors.CYAN_BOLD + "Sua lista de possíveis ações: ");
             System.out.printf(ConsoleColors.BLUE_BRIGHT + "Opções:%n[1] --> Chamado%n[2] --> Anotar Pedido%n[3] --> Mostrar Cardápio%n[0] --> Encerrar%n");
             System.out.println(ConsoleColors.CYAN_BOLD + "Qual desses você deseja realizar?");
@@ -165,6 +166,34 @@ public class Util {
             }
         }
         System.out.println(ConsoleColors.CYAN_BOLD + "Encerrando a interação teste com garçom.");
+    }
+
+    public static void actionCozinheiroMethod(Cozinheiro pessoa) {
+        boolean continuar = true;
+
+        while (continuar) {
+            System.out.println(ConsoleColors.CYAN_BOLD + "\nOlá " + pessoa.getNome() + " seja bem vindo(a) ao simulador de funções!");
+            System.out.println(ConsoleColors.CYAN_BOLD + "Sua lista de possíveis ações: ");
+            System.out.printf(ConsoleColors.BLUE_BRIGHT + "Opções:%n[1] --> Receber Pedido%n[2] --> Chamar Garçom%n[0] --> Encerrar%n");
+            System.out.println(ConsoleColors.CYAN_BOLD + "Qual desses você deseja realizar?");
+            System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");
+            char resposta = sc.nextLine().charAt(0);
+
+            switch (resposta) {
+                case '1':
+                    pessoa.receberPedido();
+                    break;
+                case '2':
+                    pessoa.chamarGarcom();
+                    break;
+                case '0':
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Opção inválida. Por favor, escolha uma opção válida.");
+            }
+        }
+        System.out.println(ConsoleColors.CYAN_BOLD + "Encerrando a interação teste com cozinheiro.");
     }
 
 }
