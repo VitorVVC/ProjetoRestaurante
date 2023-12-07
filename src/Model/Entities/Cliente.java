@@ -87,11 +87,11 @@ public class Cliente extends Pessoa implements InterfaceCliente {
             System.out.println(ConsoleColors.CYAN_BOLD + "Seu ID é: " + newId);
 
             // Construção da linha para escrever no arquivo
-            String linha = nome + "|" + loginEmail + "|" + loginSenha + "|" + newId + "|" + telefone + "|" + nascimento + "\n";
+            String linha = nome + "|" + loginEmail + "|" + loginSenha + "|" + newId + "|" + telefone + "|" + nascimento.format(dateTimeFormatter) + "\n";
 
             // Escrita no arquivo
             try {
-                File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+                File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
                 FileWriter fileWriter = new FileWriter(file, true);
                 fileWriter.write(linha);
                 fileWriter.close();
@@ -171,7 +171,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
 
     // Método para retornar o funcionario
     private Cliente lerInformacoesCliente(String ID) {
-        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
@@ -184,7 +184,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                     String senha = partes[2];
                     int id = Integer.parseInt(partes[3]);
                     String telefone = partes[4];
-                    LocalDate nascimento = LocalDate.parse(partes[5]);
+                    LocalDate nascimento = LocalDate.parse(partes[5],dateTimeFormatter);
 
                     return new Cliente(nome, email, senha, id, telefone, nascimento);
                 }
@@ -200,7 +200,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     // Método para conferir as credenciais para assim realizar o login
     private boolean verificarCredenciaisFuncionarios(String senha, String ID) {
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
             try (Scanner sc = new Scanner(file)) {
                 while (sc.hasNext()) {
@@ -258,7 +258,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     // Método "recuperar credenciais ID" para auxiliar o método recuperar ID
     private static boolean recuperarCredenciaisID(String nome, String email) {
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
             try (Scanner sc = new Scanner(file)) {
                 while (sc.hasNextLine()) {
@@ -291,7 +291,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     // Método auxiliar de recuperarID(). Que no método abaixo retorna o ID do usuário em String para podermos exibi-lo
     private String retornaID(String nome, String email) {
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
             try (Scanner sc = new Scanner(file)) {
                 while (sc.hasNextLine()) {
@@ -318,7 +318,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     // Método para recuperar a sua senha. Confere se o usuario existe
     private boolean recuperarCredenciaisSenha(String nome, String email) {
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
             try (Scanner sc = new Scanner(file)) {
                 while (sc.hasNextLine()) {
@@ -371,7 +371,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     // Método para auxiliar o retorno de senha do usuario. Retornando a senha já "resgatada"
     private String retornaSenha(String nome, String email) {
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
             try (Scanner sc = new Scanner(file)) {
                 while (sc.hasNextLine()) {
@@ -399,7 +399,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
     // Método para "reescrever a senha"
     private void reescreverSenha(String nome, String email, String ID) {
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
             try (Scanner scFile = new Scanner(file)) {
                 List<String> linhas = new ArrayList<>();
@@ -507,9 +507,9 @@ public class Cliente extends Pessoa implements InterfaceCliente {
 
     // Uma das 3 ações possiveis para o usuario
     public void realizarPedido(TiposDePrato tiposDePrato) {
-        String cardapioPrincipal = "/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Principal.txt";
-        String cardapioSobremesa = "/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Sobremesas.txt";
-        String cardapioEntrada = "/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Entrada.txt";
+        String cardapioPrincipal = "/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Principal.txt";
+        String cardapioSobremesa = "/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Sobremesas.txt";
+        String cardapioEntrada = "/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/Entrada.txt";
         String nome;
 
         if (tiposDePrato.equals(TiposDePrato.PRINCIPAL)) {

@@ -105,10 +105,10 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
         int newId = 1000000 + geraID.nextInt(9000000);
         System.out.println("Seu ID é: " + newId);
 
-        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
 
         try (FileWriter fileWriter = new FileWriter(file, true)) {
-            fileWriter.write(nome + "|" + loginEmail + "|" + loginSenha + "|" + newId + "|" + telefone + "|" + nascimento + "|" + cargo + "\n");
+            fileWriter.write(nome + "|" + loginEmail + "|" + loginSenha + "|" + newId + "|" + telefone + "|" + nascimento.format(dateTimeFormatter) + "|" + cargo + "\n");
         } catch (IOException e) {
             throw new DomainException("Erro na escrita do programa.");
         } catch (RuntimeException e) {
@@ -120,8 +120,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
             Funcionario funcAdicionado = new Garcom(nome, loginEmail, loginSenha, newId, telefone, nascimento, cargo);
             funcionarios.add(funcAdicionado);
             return funcAdicionado;
-        }
-        else if (cargo.equals(Cargos.COZINHEIRO)) {
+        } else if (cargo.equals(Cargos.COZINHEIRO)) {
             Funcionario funcAdicionado = new Cozinheiro(nome, loginEmail, loginSenha, newId, telefone, nascimento, cargo);
             funcionarios.add(funcAdicionado);
             return funcAdicionado;
@@ -193,7 +192,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
     // Método para retornar o funcionario
     private Funcionario lerInformacoesFuncionario(String ID) {
-        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
         try {
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
@@ -208,17 +207,23 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
                     String senha = partes[2];
                     Integer id = Integer.valueOf(partes[3]);
                     String telefone = partes[4];
-                    LocalDate nascimento = LocalDate.parse(partes[5]);
+                    LocalDate nascimento = LocalDate.parse(partes[5], dateTimeFormatter);
                     Cargos cargo = Cargos.valueOf(partes[6]);
 
                     // Retorne a instância criada
-                    return new Funcionario(nome, email, senha, id, telefone, nascimento, cargo);
+                    Funcionario temp = new Funcionario(nome, email, senha, id, telefone, nascimento, cargo);
+                    if (temp.getCargo().equals(Cargos.GARCOM)) {
+                        return new Garcom(nome, email, senha, id, telefone, nascimento, cargo);
+                    } else if (temp.getCargo().equals(Cargos.COZINHEIRO)) {
+                        return new Cozinheiro(nome, email, senha, id, telefone, nascimento, cargo);
+                    } else {
+                        return new Funcionario(nome, email, senha, id, telefone, nascimento, cargo);
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
             throw new DomainException("Erro na leitura de arquivos");
         }
-
         // Retorna null se não encontrar o funcionário com o e-mail fornecido
         return null;
     }
@@ -226,7 +231,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
     // Método para conferir as credenciais para assim realizar o login
     private boolean verificarCredenciaisFuncionarios(String senha, String ID) {
-        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
 
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
@@ -281,7 +286,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
     // Método "recuperar credenciais ID" para auxiliar o método recuperar ID
     private boolean recuperarCredenciaisID(String nome, String email) {
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
             Scanner sc = new Scanner(file);
 
             while (sc.hasNextLine()) {
@@ -310,7 +315,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
     private String retornaID(String nome, String email) {
         String idArquivo = null;
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
             Scanner sc = new Scanner(file);
 
             while (sc.hasNextLine()) {
@@ -334,7 +339,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
     private boolean recuperarCredenciaisSenha(String nome, String email) {
         try {
-            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+            File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
             Scanner sc = new Scanner(file);
 
             while (sc.hasNextLine()) {
@@ -382,7 +387,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
     // Método para auxiliar o retorno de senha do usuario. Retornando a senha já "resgatada"
     private String retornaSenha(String nome, String email) {
         String senhaArquivo = null;
-        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
         try (Scanner sc = new Scanner(file);) {
             while (sc.hasNextLine()) {
                 String linha = sc.nextLine();
@@ -408,7 +413,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
     // Método para "reescrever a senha"
     private static void reescreverSenha(String nome, String email, String ID) {
-        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
+        File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/FuncionariosLogins.txt");
 
         try (Scanner scFile = new Scanner(file)) {
             List<String> linhas = new ArrayList<>();
