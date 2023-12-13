@@ -7,14 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 
-
 public class Util {
-    public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    public static Scanner sc = new Scanner(System.in);
-    public static final Pattern TELEFONE_PATTERN = Pattern.compile("\\(\\d{2}\\)\\s\\d{4,5}-\\d{4}");
-
-    // TODO: 04/12/23 --> Conferir CADA CLASSE !!
-    // TODO: 06/12/23 --> Adicionar comentários objetivos em cada método do código
+    // Declarando métodos que usarei no projeto inteiro
+    public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Formatação de datas de --> 2000-01-01 para --> 01/01/2000
+    public static Scanner sc = new Scanner(System.in); // Scanner para leitura de dados e instruções fornecidas pelo usuário
+    public static final Pattern TELEFONE_PATTERN = Pattern.compile("\\(\\d{2}\\)\\s\\d{4,5}-\\d{4}"); // Formatação para leitura de entradas simulando celulares
 
     public static void principal() {
         Pessoa temp = loginMethod();
@@ -45,7 +42,7 @@ public class Util {
         return null;
     }
 
-
+    // Método para realocar o usuário para o login
     public static Pessoa loginExistente() {
         System.out.println(ConsoleColors.CYAN_BOLD + "Que incrível! Seja bem-vindo de volta.");
         System.out.println(ConsoleColors.BLUE_BRIGHT + "Cliente" + ConsoleColors.CYAN_BOLD + " ou " + ConsoleColors.BLUE_BRIGHT + "Funcionário? ");
@@ -64,6 +61,7 @@ public class Util {
         return null;
     }
 
+    // Método para realocar o usuário para a criação de sua conta no sistema
     public static Pessoa adicionarAoSistema() {
         Pessoa p = null;
         System.out.println(ConsoleColors.CYAN_BOLD + "Tudo bem, vamos criar uma conta para você.");
@@ -88,19 +86,20 @@ public class Util {
         return p;
     }
 
+    // Método de ação. Identifica o objeto que o usuário é e realoca o mesmo para sua respectiva possivel ação
     public static void actionMethod(Pessoa pessoa) {
         if (pessoa instanceof Cliente) {
             actionClienteMethod((Cliente) pessoa);
         } else if (pessoa instanceof Funcionario) {
             if (pessoa instanceof Garcom) {
                 actionGarconMethod((Garcom) pessoa);
-            }
-            else if (pessoa instanceof Cozinheiro) {
+            } else if (pessoa instanceof Cozinheiro) {
                 actionCozinheiroMethod((Cozinheiro) pessoa);
             }
         }
     }
 
+    // Método de ação para clientes
     public static void actionClienteMethod(Cliente pessoa) {
         boolean continuar = true;
 
@@ -135,6 +134,7 @@ public class Util {
         System.out.println(ConsoleColors.CYAN_BOLD + "Encerrando a interação com o cliente.");
     }
 
+    // Método de ação para garçons
     public static void actionGarconMethod(Garcom pessoa) {
         boolean continuar = true;
 
@@ -168,6 +168,7 @@ public class Util {
         System.out.println(ConsoleColors.CYAN_BOLD + "Encerrando a interação teste com garçom.");
     }
 
+    // Método de ação para cozinheiros
     public static void actionCozinheiroMethod(Cozinheiro pessoa) {
         boolean continuar = true;
 
@@ -195,5 +196,4 @@ public class Util {
         }
         System.out.println(ConsoleColors.CYAN_BOLD + "Encerrando a interação teste com cozinheiro.");
     }
-
 }

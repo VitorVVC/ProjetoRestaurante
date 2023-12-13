@@ -16,7 +16,7 @@ import static Application.Util.*;
 import static Model.Entities.Pedidos.cardapioGeral;
 
 public class Cliente extends Pessoa implements InterfaceCliente {
-    // Parametro extra que todo cliente tem sobre pessoa
+    // Parametro extra que cliente tem além dos padrões de pessoa
     Double valorPagar;
 
     // Construtor padrão
@@ -165,11 +165,10 @@ public class Cliente extends Pessoa implements InterfaceCliente {
                 }
             }
         } while (!verificarCredenciaisFuncionarios(senha, ID));
-
         return null;
     }
 
-    // Método para retornar o funcionario
+    // Método para retornar o funcionario baseando-se em uma String ID para procura-lo no txt
     private Cliente lerInformacoesCliente(String ID) {
         File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
 
@@ -234,7 +233,6 @@ public class Cliente extends Pessoa implements InterfaceCliente {
 
 
     // Método para recuperar a ID do usuário
-    // Caso o tonto do usuário esqueça o email ai ele que entre no email pra procurar
     private void recuperarID() {
         System.out.println(ConsoleColors.CYAN_BOLD + "Para recuperar por favor forneça os dados a seguir: ");
         String nome;
@@ -254,7 +252,6 @@ public class Cliente extends Pessoa implements InterfaceCliente {
             // Poder ir ao celular e conferir sem o progama ter de resetar
         } while (!recuperarCredenciaisID(nome, email));
     }
-
     // Método "recuperar credenciais ID" para auxiliar o método recuperar ID
     private static boolean recuperarCredenciaisID(String nome, String email) {
         try {
@@ -315,7 +312,7 @@ public class Cliente extends Pessoa implements InterfaceCliente {
         return null;
     }
 
-    // Método para recuperar a sua senha. Confere se o usuario existe
+    // Método para recuperar a sua senha. Confere se o usuario existe e existindo ele retorna
     private boolean recuperarCredenciaisSenha(String nome, String email) {
         try {
             File file = new File("/Users/vitorvargas/Desktop/Faculdade/Semestre DOIS/Progamação Orientada || Java/SistemaCardapio/src/TxTFiles/ClientesLogin.txt");
@@ -344,8 +341,6 @@ public class Cliente extends Pessoa implements InterfaceCliente {
         // Usuário não encontrado no arquivo
         return false;
     }
-
-
     // Método para recuperar a senha do usuário
     private void recuperarSenha() {
         System.out.println(ConsoleColors.CYAN_BOLD + "Para recuperar por favor forneça os dados a seguir: ");

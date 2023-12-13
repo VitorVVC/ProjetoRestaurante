@@ -1,12 +1,8 @@
 package Model.Entities;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
-import static Application.Util.dateTimeFormatter;
 
 public class Pessoa {
-
     private String nome;
     private String email;
     private String senha;
@@ -22,8 +18,7 @@ public class Pessoa {
         this.telefone = telefone;
         this.nascimento = nascimento;
     }
-
-
+    // Sobrescrita do método toString() para printar uma pessoa padrão
     @Override
     public String toString() {
         return "Pessoa{" +

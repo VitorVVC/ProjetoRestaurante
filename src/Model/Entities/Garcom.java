@@ -11,10 +11,11 @@ import static Model.Entities.Pedidos.*;
 
 public class Garcom extends Funcionario {
 
+    // Construtor padrão com paramêtros de funcionario
     public Garcom(String nome, String loginEmail, String loginSenha, int newId, String telefone, LocalDate nascimento, Cargos cargo) {
         super(nome,loginEmail,loginSenha,newId,telefone,nascimento,cargo);
     }
-
+    // Método de ser chamado, recebe um int para compreender qual chamado você atenderá
     public void chamado(Integer validar) {
         if (validar == 1) {
             Random random = new Random();
@@ -51,7 +52,7 @@ public class Garcom extends Funcionario {
             System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Erro na leitura da chamada fornecida!");
         }
     }
-
+    // Método para anotar um pedido personalizado
     public void anotarPedidoPersonalizado() {
         System.out.println(ConsoleColors.CYAN_BOLD + "Anote o pedido no bloco abaixo: ");
         System.out.println(ConsoleColors.CYAN_BOLD + "Quantas pessoas? ");
@@ -71,7 +72,7 @@ public class Garcom extends Funcionario {
             System.out.printf(ConsoleColors.CYAN_BOLD + "A cozinha recebeu o pedido de {%s}%n", nomeCliente);
         }
     }
-
+    // Método para mostrar o cardapio ao cliente
     public void mostrarCardapio() {
         System.out.println(ConsoleColors.CYAN_BOLD + "Qual cardápio o cliente deseja acessar? ");
         System.out.print(ConsoleColors.YELLOW_BOLD_BRIGHT + "Resposta: ");

@@ -297,7 +297,7 @@ public class Pedidos implements Comparable<Pedidos> {
     }
 
 
-    // Sobrescrita do método toString()
+    // Sobrescrita do método toString() para personalizadamente printar os Pedidos
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

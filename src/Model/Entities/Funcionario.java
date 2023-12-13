@@ -205,7 +205,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
                     String nome = partes[0];
                     String email = partes[1];
                     String senha = partes[2];
-                    Integer id = Integer.valueOf(partes[3]);
+                    int id = Integer.parseInt(partes[3]);
                     String telefone = partes[4];
                     LocalDate nascimento = LocalDate.parse(partes[5], dateTimeFormatter);
                     Cargos cargo = Cargos.valueOf(partes[6]);
@@ -344,7 +344,7 @@ public class Funcionario extends Pessoa implements InterfaceFuncionario {
 
             while (sc.hasNextLine()) {
                 String linha = sc.nextLine();
-                String[] partes = linha.split(" ");
+                String[] partes = linha.split("\\|");
 
                 // Verificar se a linha contém informações suficientes
                 String nomeArquivo = partes[0];
